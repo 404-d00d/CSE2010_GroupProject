@@ -155,10 +155,6 @@ public class SmartWord {
    }
 
 
-   // process old messages from oldMessageFile
-   public void processOldMessages(String oldMessageFile) {
-     
-   }
 
    // based on a letter typed in by the user, return 3 word guesses in an array
    // letter: letter typed in by the user
