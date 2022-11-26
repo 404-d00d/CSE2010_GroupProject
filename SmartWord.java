@@ -203,6 +203,21 @@ public class SmartWord {
    }
    
    public static void main (String[] args) throws IOException {
+
+      /* initializes hashSet of Strings named oldWords */
+      Set<String> oldWords = new HashSet<>();
+
+      /* creates Path p to access old words */
+      Path path = Paths.get(args[1]);
+
+      byte[] by = Files.readAllBytes(path); // reads the bytes in an makes them into an array of bytes
+      String contents = new String(by, "UTF-8"); // string contentes is a big string with all the words
+      String[] wor = contents.split("\n"); // splits contentes by new line and puts each string into an array wor
+
+      /* adds each word in words to the hashSet */
+      Collections.addAll(oldWords, wor);
+
+
       File wordF = new File(args[0]);
       File oldF = new File(args[1]);
 
