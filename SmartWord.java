@@ -207,12 +207,6 @@ public class SmartWord {
 
       root = new tNode('*', 0); // creates the root tNode
 
-      /* initializes hashSet of Strings named wordSet */
-      Set<String> wordSet = new HashSet<>();
-
-      /* initializes hashSet of Strings named oldWords */
-      Set<String> oldWords = new HashSet<>();
-
       wordList = new SmartWord(args[0], wordSet); // creates & stores the wordList
 
       oldWordList = new SmartWord(args[1], oldWords); // creates & stores the oldWordList
