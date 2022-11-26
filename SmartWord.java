@@ -18,9 +18,17 @@ public class SmartWord {
 
    String[] guesses = new String[3];  // 3 guesses from SmartWord
 
-   public static tNode root; // root of tree
+   public static SmartWord wordList; // dictonary of all words
 
-   public static WordList w;
+   public static SmartWord oldWordList; // dictonary of all old words
+
+   /* initializes hashSet of Strings named wordSet */
+   public static Set<String> wordSet = new HashSet<>();
+
+   /* initializes hashSet of Strings named oldWords */
+   public static Set<String> oldWords = new HashSet<>();
+
+   public static tNode root; // root of tree
 
    public static class tNode { // tree class
       char letter;
@@ -72,24 +80,11 @@ public class SmartWord {
          }
          possibleWord = newStr;
 
-         if (w.contains(possibleWord)) {
+         if (contains(wordSet, possibleWord)) {
             t.setEndOfWord(true);
          } else {
             t.setEndOfWord(false);
          }
-      }
-      public static tNode findNode(tNode n, char s) { // finds node with item equal to s using In-Order traversal
-         if ((n.letter == s)) { // base case
-            return n;
-         } else {
-		    for (tNode c : n.children) { // loops through each node in the children list for node n
-               tNode vistedNode = findNode(c, s); // makes the problem smaller
-               if (vistedNode != null) { // ensures vistedNode isn't null to avoid nullPointerException
-                  return vistedNode;
-               }
-            }
-         }
-         return null; // returns null if not found
       }
 
 
@@ -139,38 +134,26 @@ public class SmartWord {
 
 
 
-   public static class WordList {
-
-      /* initializes hashSet of Strings named wordSet */
-      private Set<String> wordSet = new HashSet<>();;
-
-      public WordList() throws IOException { // creates list of words
-
-         /* creates Path p to access words.txt */
-         Path p = Paths.get("words.txt");
-
-         byte[] b = Files.readAllBytes(p); // reads the bytes in an makes them into an array of bytes
-         String contents = new String(b, "UTF-8"); // string contentes is a big string with all the words
-         String[] words = contents.split("\n"); // splits contentes by new line and puts each string into an array words
-
-         /* adds each word in words to the hashSet */
-         Collections.addAll(wordSet, words);
-      }
-
-      /* if word is in wordSet, returns true. If not, returns false */
-      public boolean contains(String word) {
-         return wordSet.contains(word);
-      }
-
-   } /* end of WordList class */
-
-
-
-
    // initialize SmartWord with a file of English words
-   public SmartWord(String wordFile) {
+   public SmartWord(String wordFile, Set<String> wordSet) throws IOException { // creates list of words
 
+      /* creates Path p to access words.txt */
+      Path p = Paths.get(wordFile);
+
+      byte[] b = Files.readAllBytes(p); // reads the bytes in an makes them into an array of bytes
+      String contents = new String(b, "UTF-8"); // string contentes is a big string with all the words
+      String[] words = contents.split("\n"); // splits contentes by new line and puts each string into an array words
+
+      /* adds each word in words to the hashSet */
+      Collections.addAll(wordSet, words);
+   } 
+
+
+   /* if word is in wordSet, returns true. If not, returns false */
+   public static boolean contains(Set<String> ws , String word) {
+      return ws.contains(word);
    }
+
 
    // process old messages from oldMessageFile
    public void processOldMessages(String oldMessageFile) {
@@ -216,29 +199,23 @@ public class SmartWord {
    }
    
    public static void main (String[] args) throws IOException {
-
-      /* initializes hashSet of Strings named oldWords */
-      Set<String> oldWords = new HashSet<>();
-
-      /* creates Path p to access old words */
-      Path path = Paths.get(args[1]);
-
-      byte[] by = Files.readAllBytes(path); // reads the bytes in an makes them into an array of bytes
-      String contents = new String(by, "UTF-8"); // string contentes is a big string with all the words
-      String[] wor = contents.split("\n"); // splits contentes by new line and puts each string into an array wor
-
-      /* adds each word in words to the hashSet */
-      Collections.addAll(oldWords, wor);
-
-
       File wordF = new File(args[0]);
       File oldF = new File(args[1]);
 
       Scanner sc = new Scanner(wordF);
       Scanner sc2 = new Scanner(oldF);
 
-      w = new WordList(); // creates & stores the wordList
       root = new tNode('*', 0); // creates the root tNode
+
+      /* initializes hashSet of Strings named wordSet */
+      Set<String> wordSet = new HashSet<>();
+
+      /* initializes hashSet of Strings named oldWords */
+      Set<String> oldWords = new HashSet<>();
+
+      wordList = new SmartWord(args[0], wordSet); // creates & stores the wordList
+
+      oldWordList = new SmartWord(args[1], oldWords); // creates & stores the oldWordList
 
       while(sc.hasNextLine()) {
         String line = sc.nextLine();
