@@ -214,19 +214,22 @@ public class SmartWord {
      
       ArrayList<Character> s = new ArrayList<>();
  
-      
+      // while the word file has a word on the line
        while(sc.hasNextLine()) {
+         // stores word as a variable
          String line = sc.nextLine();
- 
+         // adds each character of the word to a char arraylist
          for(int i = 0; i < line.length(); i++) {
              s.add(line.charAt(i));
          }
 
          // adds characters to the tree
          if(!s.isEmpty()) {
-
+            
+            // loops through each char of the word
             for (Character current: s) {
                try {
+                       // gets the previous char
                        previous = s.get(s.indexOf(current)-1);
 
                    } catch (IndexOutOfBoundsException ignored){
