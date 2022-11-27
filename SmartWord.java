@@ -214,25 +214,20 @@ public class SmartWord {
      
       ArrayList<Character> s = new ArrayList<>();
  
-        while(sc.hasNextLine()) {
-          String line = sc.nextLine();
+      
+       while(sc.hasNextLine()) {
+         String line = sc.nextLine();
  
-          for(int i = 0; i < line.length(); i++) {
-            s.add(line.charAt(i));
-          }
+         for(int i = 0; i < line.length(); i++) {
+             s.add(line.charAt(i));
+         }
 
-          // adds characters to the tree
-          if(!s.isEmpty()) {
+         // adds characters to the tree
+         if(!s.isEmpty()) {
 
             for (Character current: s) {
-              try {
+               try {
                        previous = s.get(s.indexOf(current)-1);
-
-                       // adds the first character of word as child of root
-                       // first base case
-                       if(previous == null) {
-                          tNode.appendChild(root, current, 0);
-                       }
 
                    } catch (IndexOutOfBoundsException ignored){
                       // ignored
@@ -240,23 +235,29 @@ public class SmartWord {
                try {
                        // grabs the next char
                        next = s.get(s.indexOf(current)+1);
-                       // every previous value that is not null is parent of next value
-                       if(previous != null) {
-
-                        tNode parent = new tNode(previous, 0);
-                        tNode.appendChild(parent, current, 0);
-                       }
-                       // every next value that is not null is children of current value
-                       if(next != null) {
-
-                        tNode p = new tNode(current, 0);
-                        tNode.appendChild(p, next, 0);
-
-                       }
 
                    } catch (IndexOutOfBoundsException ignored){
-                       next = null;
+                       //next = null;
                    }
+
+               // adds the first character of word as child of root
+               // first base case
+               if(previous == null) {
+                  tNode.appendChild(root, current, 0);
+               }
+
+               // every previous value that is not null is parent of next value
+               if(previous != null) {
+                  tNode parent = new tNode(previous, 0);
+                  tNode.appendChild(parent, current, 0);
+               }
+
+               // every next value that is not null is children of current value
+               if(next != null) {
+                  tNode parent = new tNode(current, 0);
+                  tNode.appendChild(parent, next, 0);
+               }
+
                
            }
            
@@ -264,8 +265,6 @@ public class SmartWord {
          }
  
        }
-
-      }
 
    }
 
