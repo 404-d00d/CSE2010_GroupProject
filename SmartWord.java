@@ -207,13 +207,63 @@ public class SmartWord {
 
       oldWordList = new SmartWord(args[1], oldWords); // creates & stores the oldWordList
 
-      while(sc.hasNextLine()) {
-        String line = sc.nextLine();
-        char [] spiltChar = new char[line.length()];
+      
+       // initializing next and previous pointers
+       Character next = null;
+       Character previous = null;
+ 
+       while(sc.hasNextLine()) {
+         String line = sc.nextLine();
 
-        for(int i = 0; i < line.length(); i++) {
-            spiltChar[i] = line.charAt(i);
-        }
+         ArrayList<Character> s = new ArrayList<>();
+ 
+         for(int i = 0; i < line.length(); i++) {
+             s.add(line.charAt(i));
+         }
+
+         // adds characters to the tree
+         if(!s.isEmpty()) {
+
+            for (Character current: s) {
+               try {
+                       previous = s.get(s.indexOf(current)-1);
+
+                       // adds the first character of word as child of root
+                       // first base case
+                       if(previous == null) {
+                          tNode.appendChild(root, current, 0);
+                       }
+
+                   } catch (IndexOutOfBoundsException ignored){
+                      // ignored
+                   }
+               try {
+                       // grabs the next char
+                       next = s.get(s.indexOf(current)+1);
+                       // every previous value that is not null is parent of next value
+                       if(previous != null) {
+
+                        tNode parent = new tNode(previous, 0);
+                        tNode.appendChild(parent, current, 0);
+                       }
+                       // every next value that is not null is children of current value
+                       if(next != null) {
+
+                        tNode p = new tNode(current, 0);
+                        tNode.appendChild(p, next, 0);
+
+                       }
+
+                   } catch (IndexOutOfBoundsException ignored){
+                       next = null;
+                   }
+               
+           }
+           
+
+         }
+ 
+       }
 
       }
 
