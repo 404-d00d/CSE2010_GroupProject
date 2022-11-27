@@ -208,24 +208,24 @@ public class SmartWord {
       oldWordList = new SmartWord(args[1], oldWords); // creates & stores the oldWordList
 
       
-       // initializing next and previous pointers
-       Character next = null;
-       Character previous = null;
+      // initializing next and previous pointers
+      Character next = null;
+      Character previous = null;
+     
+      ArrayList<Character> s = new ArrayList<>();
  
-       while(sc.hasNextLine()) {
-         String line = sc.nextLine();
-
-         ArrayList<Character> s = new ArrayList<>();
+        while(sc.hasNextLine()) {
+          String line = sc.nextLine();
  
-         for(int i = 0; i < line.length(); i++) {
-             s.add(line.charAt(i));
-         }
+          for(int i = 0; i < line.length(); i++) {
+            s.add(line.charAt(i));
+          }
 
-         // adds characters to the tree
-         if(!s.isEmpty()) {
+          // adds characters to the tree
+          if(!s.isEmpty()) {
 
             for (Character current: s) {
-               try {
+              try {
                        previous = s.get(s.indexOf(current)-1);
 
                        // adds the first character of word as child of root
