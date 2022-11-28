@@ -25,7 +25,7 @@ public class SmartWord {
       tNode parent;
       int count;
       List<tNode> children;
-      boolean endOfWord;
+      boolean endOfWord = false;
 
       public tNode (char letter, int count) { // constructor for tree node
         this.count = count;
@@ -170,16 +170,20 @@ public class SmartWord {
          StringBuilder sb = new StringBuilder();
 
          for(tNode child : children) {
-            if(sb.length() > 0) {
-               sb.append("\n");
-            }
-            sb.append(child.getLetter());
+            // recursion that goes down and up the tree
             String childrenStrings = child.toString();
+            String tmp = "";
             for (int i = 0; i < childrenStrings.length(); i++) {
-               sb.append(childrenStrings.charAt(i));
-               if (childrenStrings.charAt(i) == '\n') {
-                  sb.append(child.getLetter());
+               // adds all of the children of the first children
+               tmp += childrenStrings.charAt(i);
+               
+               if (childrenStrings.charAt(i) == '\n' || i == childrenStrings.length() - 1) {
+                  // adds parent to the front of string
+                  sb.append(child.getLetter() + tmp);
+                  // resets temp
+                  tmp = "";
                }
+         
             }
          }
          if (this.endOfWord) {
@@ -276,7 +280,7 @@ public class SmartWord {
        sc.close();
        sc2.close();
 
-       System.out.println(root.toString());
+       System.out.println("output\n" + root.toString());
 
    }
 
