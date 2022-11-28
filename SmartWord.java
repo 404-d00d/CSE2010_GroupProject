@@ -89,26 +89,6 @@ public class SmartWord {
          return null; // returns null if not found
       }
 
-      public Boolean hasChild(char c) {
-         for(tNode child : children) {
-            if(child.getLetter() == c) {
-               return true;
-            }
-         }
-         return false;
-   
-      }
-
-      public tNode getChild(char c) { // returns the parent of a particular tree node
-         for(tNode child : children) {
-            if(child.getLetter() == c) {
-               return child;
-            }
-         }
-         return null;
-      
-      }
-
 
       public static Boolean checkNode(tNode n, char s) { // finds node with item equal to s using In-Order traversal
          if ((n.letter == s)) { // base case
@@ -163,6 +143,26 @@ public class SmartWord {
 
       public boolean getEndOfWord() { // returns true if character forms the end of a word,false otherwise
          return this.endOfWord;
+      }
+      // checks if there is a child 
+      public Boolean hasChild(char c) {
+         for(tNode child : children) {
+            if(child.getLetter() == c) {
+               return true;
+            }
+         }
+         return false;
+   
+      }
+      // grabs the child 
+      public tNode getChild(char c) { 
+         for(tNode child : children) {
+            if(child.getLetter() == c) {
+               return child;
+            }
+         }
+         return null;
+      
       }
 
       @Override
@@ -251,26 +251,26 @@ public class SmartWord {
  
        while(sc.hasNextLine()) {
          String line = sc.nextLine();
-
-         // adds characters to the tree
-       
-            tNode parent = root;
+         // setsthe parent equal to the root node
+         tNode parent = root;
+            // go through each character of the word
             for (int i = 0; i < line.length(); i++) {
                char current = line.charAt(i);
+               // check if the parent has a child
                Boolean check = parent.hasChild(current);
-
+               // if it does we get the child
                if(check) {
                   parent = parent.getChild(current);
-
+               // if not we add child
                } else {
                   parent = tNode.appendChild(parent, current, 0);  
                } 
            }
-
+           // mark the occurences of word
            parent.count++;
+           // mark the ending of the word 
            parent.setEndOfWord(true);
          
- 
        }
 
        sc.close();
