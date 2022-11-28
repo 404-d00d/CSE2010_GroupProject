@@ -11,22 +11,12 @@
 
 
 */
-import java.nio.file.*;
+
 import java.io.*;
 import java.util.*;
 public class SmartWord {
 
    String[] guesses = new String[3];  // 3 guesses from SmartWord
-
-   public static SmartWord wordList; // dictonary of all words
-
-   public static SmartWord oldWordList; // dictonary of all old words
-
-   /* initializes hashSet of Strings named wordSet */
-   public static Set<String> wordSet = new HashSet<>();
-
-   /* initializes hashSet of Strings named oldWords */
-   public static Set<String> oldWords = new HashSet<>();
 
    public static tNode root; // root of tree
 
@@ -44,9 +34,10 @@ public class SmartWord {
       }
  
 
-       public static void appendChild(tNode p, char c, int count) { // adds a child to tree
+       public static tNode appendChild(tNode p, char c, int count) { // adds a child to tree
          tNode t = new tNode(c, count); // creates new tree node
          t.setParent(p); // sets parent of node to p
+         t.setEndOfWord(false);
          
          /* alphabetically adds to list of children */
          int index = 0;
@@ -80,14 +71,58 @@ public class SmartWord {
          }
          possibleWord = newStr;
 
-         if (contains(wordSet, possibleWord)) {
-            t.setEndOfWord(true);
+
+         return t;
+      }
+
+      public static tNode findNode(tNode n, char s) { // finds node with item equal to s using In-Order traversal
+         if ((n.letter == s)) { // base case
+            return n;
          } else {
-            t.setEndOfWord(false);
+		    for (tNode c : n.children) { // loops through each node in the children list for node n
+               tNode vistedNode = findNode(c, s); // makes the problem smaller
+               if (vistedNode != null) { // ensures vistedNode isn't null to avoid nullPointerException
+                  return vistedNode;
+               }
+            }
          }
+         return null; // returns null if not found
+      }
+
+      public Boolean hasChild(char c) {
+         for(tNode child : children) {
+            if(child.getLetter() == c) {
+               return true;
+            }
+         }
+         return false;
+   
+      }
+
+      public tNode getChild(char c) { // returns the parent of a particular tree node
+         for(tNode child : children) {
+            if(child.getLetter() == c) {
+               return child;
+            }
+         }
+         return null;
+      
       }
 
 
+      public static Boolean checkNode(tNode n, char s) { // finds node with item equal to s using In-Order traversal
+         if ((n.letter == s)) { // base case
+            return true;
+         } else {
+		    for (tNode c : n.children) { // loops through each node in the children list for node n
+               tNode vistedNode = findNode(c, s); // makes the problem smaller
+               if (vistedNode != null) { // ensures vistedNode isn't null to avoid nullPointerException
+                  return true;
+               } 
+            }
+         }
+         return false; // returns false if not found
+      }
 
       public char getLetter() { // returns the letter of a particular tree node
         return this.letter;
@@ -130,31 +165,42 @@ public class SmartWord {
          return this.endOfWord;
       }
 
+      @Override
+      public String toString() {
+         StringBuilder sb = new StringBuilder();
+
+         for(tNode child : children) {
+            if(sb.length() > 0) {
+               sb.append("\n");
+            }
+            sb.append(child.getLetter());
+            String childrenStrings = child.toString();
+            for (int i = 0; i < childrenStrings.length(); i++) {
+               sb.append(childrenStrings.charAt(i));
+               if (childrenStrings.charAt(i) == '\n') {
+                  sb.append(child.getLetter());
+               }
+            }
+         }
+         if (this.endOfWord) {
+            sb.append("\n");
+         }
+         return sb.toString();
+         
+      }
+
    } /* end of tNode class */
 
 
-
    // initialize SmartWord with a file of English words
-   public SmartWord(String wordFile, Set<String> wordSet) throws IOException { // creates list of words
+   public SmartWord(String wordFile) {
 
-      /* creates Path p to access words.txt */
-      Path p = Paths.get(wordFile);
-
-      byte[] b = Files.readAllBytes(p); // reads the bytes in an makes them into an array of bytes
-      String contents = new String(b, "UTF-8"); // string contentes is a big string with all the words
-      String[] words = contents.split("\n"); // splits contentes by new line and puts each string into an array words
-
-      /* adds each word in words to the hashSet */
-      Collections.addAll(wordSet, words);
-   } 
-
-
-   /* if word is in wordSet, returns true. If not, returns false */
-   public static boolean contains(Set<String> ws , String word) {
-      return ws.contains(word);
    }
 
-
+   // process old messages from oldMessageFile
+   public void processOldMessages(String oldMessageFile) {
+     
+   }
 
    // based on a letter typed in by the user, return 3 word guesses in an array
    // letter: letter typed in by the user
@@ -180,7 +226,7 @@ public class SmartWord {
    // c.         false               correct word
    public void feedback(boolean isCorrectGuess, String correctWord) {
       if((isCorrectGuess == false) && (correctWord == null)) {
-
+         
       }
 
       if((isCorrectGuess == false) && (correctWord != null)) {
@@ -191,83 +237,46 @@ public class SmartWord {
 
       }
   
-
    }
    
    public static void main (String[] args) throws IOException {
-      File wordF = new File(args[0]);
-      File oldF = new File(args[1]);
-
-      Scanner sc = new Scanner(wordF);
-      Scanner sc2 = new Scanner(oldF);
-
-      root = new tNode('*', 0); // creates the root tNode
-
-      wordList = new SmartWord(args[0], wordSet); // creates & stores the wordList
-
-      oldWordList = new SmartWord(args[1], oldWords); // creates & stores the oldWordList
-
-      
-      // initializing next and previous pointers
-      Character next = null;
-      Character previous = null;
-     
-      ArrayList<Character> s = new ArrayList<>();
  
-      // while the word file has a word on the line
+       File wordF = new File(args[0]);
+       File oldF = new File(args[1]);
+ 
+       Scanner sc = new Scanner(wordF);
+       Scanner sc2 = new Scanner(oldF);
+ 
+       root = new tNode('*', 0); // creates the root tNode
+ 
        while(sc.hasNextLine()) {
-         // stores word as a variable
          String line = sc.nextLine();
-         // adds each character of the word to a char arraylist
-         for(int i = 0; i < line.length(); i++) {
-             s.add(line.charAt(i));
-         }
 
          // adds characters to the tree
-         if(!s.isEmpty()) {
-            
-            // loops through each char of the word
-            for (Character current: s) {
-               try {
-                       // gets the previous char
-                       previous = s.get(s.indexOf(current)-1);
+       
+            tNode parent = root;
+            for (int i = 0; i < line.length(); i++) {
+               char current = line.charAt(i);
+               Boolean check = parent.hasChild(current);
 
-                   } catch (IndexOutOfBoundsException ignored){
-                      // ignored
-                   }
-               try {
-                       // grabs the next char
-                       next = s.get(s.indexOf(current)+1);
+               if(check) {
+                  parent = parent.getChild(current);
 
-                   } catch (IndexOutOfBoundsException ignored){
-                       //next = null;
-                   }
-
-               // adds the first character of word as child of root
-               // first base case
-               if(previous == null) {
-                  tNode.appendChild(root, current, 0);
-               }
-
-               // every previous value that is not null is parent of next value
-               if(previous != null) {
-                  tNode parent = new tNode(previous, 0);
-                  tNode.appendChild(parent, current, 0);
-               }
-
-               // every next value that is not null is children of current value
-               if(next != null) {
-                  tNode parent = new tNode(current, 0);
-                  tNode.appendChild(parent, next, 0);
-               }
-
-               
+               } else {
+                  parent = tNode.appendChild(parent, current, 0);  
+               } 
            }
-           
 
-         }
+           parent.count++;
+           parent.setEndOfWord(true);
+         
  
        }
+
+       sc.close();
+       sc2.close();
+
+       System.out.println(root.toString());
 
    }
 
