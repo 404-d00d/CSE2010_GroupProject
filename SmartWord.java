@@ -70,35 +70,6 @@ public class SmartWord {
          return t;
       }
 
-      public static tNode findNode(tNode n, char s) { // finds node with item equal to s using In-Order traversal
-         if ((n.letter == s)) { // base case
-            return n;
-         } else {
-		    for (tNode c : n.children) { // loops through each node in the children list for node n
-               tNode vistedNode = findNode(c, s); // makes the problem smaller
-               if (vistedNode != null) { // ensures vistedNode isn't null to avoid nullPointerException
-                  return vistedNode;
-               }
-            }
-         }
-         return null; // returns null if not found
-      }
-
-
-      public static Boolean checkNode(tNode n, char s) { // finds node with item equal to s using In-Order traversal
-         if ((n.letter == s)) { // base case
-            return true;
-         } else {
-		    for (tNode c : n.children) { // loops through each node in the children list for node n
-               tNode vistedNode = findNode(c, s); // makes the problem smaller
-               if (vistedNode != null) { // ensures vistedNode isn't null to avoid nullPointerException
-                  return true;
-               } 
-            }
-         }
-         return false; // returns false if not found
-      }
-
       public char getLetter() { // returns the letter of a particular tree node
         return this.letter;
       }
