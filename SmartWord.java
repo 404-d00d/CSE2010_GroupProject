@@ -70,6 +70,35 @@ public class SmartWord {
          return t;
       }
 
+      public static tNode findNode(tNode n, char s) { // finds node with item equal to s using In-Order traversal
+         if ((n.letter == s)) { // base case
+            return n;
+         } else {
+		    for (tNode c : n.children) { // loops through each node in the children list for node n
+               tNode vistedNode = findNode(c, s); // makes the problem smaller
+               if (vistedNode != null) { // ensures vistedNode isn't null to avoid nullPointerException
+                  return vistedNode;
+               }
+            }
+         }
+         return null; // returns null if not found
+      }
+
+
+      public static Boolean checkNode(tNode n, char s) { // finds node with item equal to s using In-Order traversal
+         if ((n.letter == s)) { // base case
+            return true;
+         } else {
+		    for (tNode c : n.children) { // loops through each node in the children list for node n
+               tNode vistedNode = findNode(c, s); // makes the problem smaller
+               if (vistedNode != null) { // ensures vistedNode isn't null to avoid nullPointerException
+                  return true;
+               } 
+            }
+         }
+         return false; // returns false if not found
+      }
+
       public char getLetter() { // returns the letter of a particular tree node
         return this.letter;
       }
@@ -97,7 +126,7 @@ public class SmartWord {
       }
 
 
-      public List<tNode> getchildren() { // returns the children list of a particular tree node
+      public List<tNode> getChildren() { // returns the children list of a particular tree node
          return this.children;
       }
 
@@ -165,13 +194,63 @@ public class SmartWord {
 
 
    // initialize SmartWord with a file of English words
-   public SmartWord(String wordFile) {
+   public static void SmartWord(String wordFile) throws IOException {
+      File wordF = new File(wordFile);
+      Scanner sc = new Scanner(wordF);
 
+      while(sc.hasNextLine()) {
+         String line = sc.nextLine();
+         // sets the parent equal to the root node
+         tNode parent = root;
+            // go through each character of the word
+            for (int i = 0; i < line.length(); i++) {
+               char current = line.charAt(i);
+               // check if the parent has a child
+               Boolean check = parent.hasChild(current);
+               // if it does we get the child
+               if(check) {
+                  parent = parent.getChild(current);
+               // if not we add child
+               } else {
+                  parent = tNode.appendChild(parent, current, 0);  
+               } 
+           }
+           // mark the occurences of word
+           parent.count++;
+           // mark the ending of the word 
+           parent.setEndOfWord(true);
+      }
+      sc.close(); // closes scanner
    }
 
    // process old messages from oldMessageFile
-   public void processOldMessages(String oldMessageFile) {
-     
+   public static void processOldMessages(String oldMessageFile) throws IOException {
+      File oldF = new File(oldMessageFile);
+      Scanner sc2 = new Scanner(oldF);
+
+      while(sc2.hasNextLine()) {
+         String line = sc2.nextLine();
+         String[] str = line.split(" ");
+
+         tNode parent = root; // sets the parent equal to the root node
+
+         for (String s : str) {
+            s = s.replaceAll("[^a-zA-Z]", "").toLowerCase(); // Gets rid of weird characters
+            for (int i = 0; i < s.length(); i++) { // go through each character of the word
+               char current = s.charAt(i);
+            
+               /* check if the parent has a child, if it does we get the child */
+               if(parent.hasChild(current)) {
+                  parent = parent.getChild(current);
+               } else { // if not we add child
+                  parent = tNode.appendChild(parent, current, 0);  
+               } 
+		    }
+         }     
+         parent.count++; // mark the occurences of word      
+         parent.setEndOfWord(true); // mark the ending of the word 
+	  }
+      sc2.close(); // closes scanner
    }
 
    // based on a letter typed in by the user, return 3 word guesses in an array
@@ -212,71 +291,11 @@ public class SmartWord {
    }
    
    public static void main (String[] args) throws IOException {
- 
-       File wordF = new File(args[0]);
-       File oldF = new File(args[1]);
- 
-       Scanner sc = new Scanner(wordF);
-       Scanner sc2 = new Scanner(oldF);
- 
-       root = new tNode('*', 0); // creates the root tNode
+      root = new tNode('*', 0); // creates the root tNode
+      SmartWord(args[0]);
+      processOldMessages(args[1]);
 
-
-       /* Move to SmartWord Method */
-       while(sc.hasNextLine()) {
-         String line = sc.nextLine();
-         // sets the parent equal to the root node
-         tNode parent = root;
-            // go through each character of the word
-            for (int i = 0; i < line.length(); i++) {
-               char current = line.charAt(i);
-               // check if the parent has a child
-               Boolean check = parent.hasChild(current);
-               // if it does we get the child
-               if(check) {
-                  parent = parent.getChild(current);
-               // if not we add child
-               } else {
-                  parent = tNode.appendChild(parent, current, 0);  
-               } 
-           }
-           // mark the occurences of word
-           parent.count++;
-           // mark the ending of the word 
-           parent.setEndOfWord(true);
-       } 
-
-
-      /* Move to processOldMessages method */
-      while(sc2.hasNextLine()) {
-         String line = sc2.nextLine();
-         String[] str = line.split(" ");
-
-         tNode parent = root; // sets the parent equal to the root node
-
-         for (String s : str) {
-
-            s = s.replaceAll("[^a-zA-Z]", "").toLowerCase(); // Gets rid of weird characters
-            for (int i = 0; i < s.length(); i++) { // go through each character of the word
-               char current = s.charAt(i);
-            
-               /* check if the parent has a child, if it does we get the child */
-               if(parent.hasChild(current)) {
-                  parent = parent.getChild(current);
-               } else { // if not we add child
-                  parent = tNode.appendChild(parent, current, 0);  
-               } 
-		    }
-         }     
-         parent.count++; // mark the occurences of word      
-         parent.setEndOfWord(true); // mark the ending of the word 
-	  }
-
-       /* closes scanners */
-       sc.close();
-       sc2.close();
-
-       System.out.println("output\n" + root.toString());
+       System.out.println("output:");
 
    }
 
