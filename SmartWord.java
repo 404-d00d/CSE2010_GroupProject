@@ -16,6 +16,9 @@ public class SmartWord {
    public static tNode root = new tNode('*', 0); // creates the root tNode; // root of tree
 
    public static ArrayList<tNode> wordNodes = new ArrayList<>();
+   public static ArrayList<String> badGuess = new ArrayList<>(); // list of bag guesses
+   public static ArrayList<String> goodGuess = new ArrayList<>(); // list of good guesses
+	
 
    public static class tNode { // tree class
       char letter;
@@ -343,16 +346,16 @@ public class SmartWord {
    // b.         false               null
    // c.         false               correct word
    public void feedback(boolean isCorrectGuess, String correctWord) {
-      if((isCorrectGuess == false) && (correctWord == null)) {
-         
+       if((isCorrectGuess == false) && (correctWord == null)) {
+         badGuess.add(correctWord);
       }
 
       if((isCorrectGuess == false) && (correctWord != null)) {
-
+         badGuess.add(correctWord);
       }
 
       if((isCorrectGuess) && (correctWord != null)) {
-
+         goodGuess.add(correctWord);
       }
   
    }
