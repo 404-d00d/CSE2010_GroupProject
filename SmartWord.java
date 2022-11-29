@@ -13,7 +13,7 @@ public class SmartWord {
 
    String[] guesses = new String[3];  // 3 guesses from SmartWord
 
-   public static tNode root; // root of tree
+   public static tNode root = new tNode('*', 0); // creates the root tNode; // root of tree
 
    public static class tNode { // tree class
       char letter;
@@ -145,9 +145,10 @@ public class SmartWord {
 
 
       /* checks if there is a child */
-      public Boolean hasChild(char c) {
-         for(tNode child : children) {
-            if(child.getLetter() == c) {
+      public static Boolean hasChild(tNode p, char c) {
+         
+         for(tNode child : p.getChildren()) {
+            if(child.letter == c) {
                return true;
             }
          }
@@ -211,8 +212,7 @@ public class SmartWord {
             
             for (int i = 0; i < line.length(); i++) { // go through each character of the word
                char current = line.charAt(i);
-                
-               if(parent.hasChild(current)) { // check if the parent has a child, if it does we get the child
+               if(tNode.hasChild(parent, current)) { // check if the parent has a child, if it does we get the child
                   parent = parent.getChild(current);
                } else { // if not we add child
                   parent = tNode.appendChild(parent, current, 0);  
@@ -244,7 +244,7 @@ public class SmartWord {
             char current = w.charAt(i);
             
             /* check if the parent has a child, if it does we get the child */
-            if(parent.hasChild(current)) {
+            if(parent.hasChild(parent, current)) {
                parent = parent.getChild(current);
             } else { // if not we add child
                parent = tNode.appendChild(parent, current, 0);  
@@ -296,9 +296,6 @@ public class SmartWord {
    }
    
    public static void main (String[] args) throws IOException {
-      root = new tNode('*', 0); // creates the root tNode
-      //smartWord(args[0]);
-      //processOldMessages(args[1]);
       
       System.out.println("output: \n" + root.toString());
 
