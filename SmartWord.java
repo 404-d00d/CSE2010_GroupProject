@@ -66,9 +66,10 @@ public class SmartWord {
          }
          possibleWord = newStr;
 
-
          return t;
       }
+
+
 
       public static tNode findNode(tNode n, char s) { // finds node with item equal to s using In-Order traversal
          if ((n.letter == s)) { // base case
@@ -99,6 +100,8 @@ public class SmartWord {
          return false; // returns false if not found
       }
 
+
+      /* get and set methods */
       public char getLetter() { // returns the letter of a particular tree node
         return this.letter;
       }
@@ -141,7 +144,7 @@ public class SmartWord {
       }
 
 
-      // checks if there is a child 
+      /* checks if there is a child */
       public Boolean hasChild(char c) {
          for(tNode child : children) {
             if(child.getLetter() == c) {
@@ -153,7 +156,7 @@ public class SmartWord {
 
 
 
-      // grabs the child 
+      /* grabs the child */
       public tNode getChild(char c) { 
          for(tNode child : children) {
             if(child.getLetter() == c) {
@@ -164,6 +167,8 @@ public class SmartWord {
       
       }
 
+
+      /* prints out tree's words */
       @Override
       public String toString() {
          StringBuilder sb = new StringBuilder();
@@ -198,20 +203,18 @@ public class SmartWord {
       File wordF = new File(wordFile);
       Scanner sc = new Scanner(wordF);
 
+      /* loops until end of the file */
       while(sc.hasNextLine()) {
          String line = sc.nextLine();
-         // sets the parent equal to the root node
-         tNode parent = root;
-            // go through each character of the word
-            for (int i = 0; i < line.length(); i++) {
+         
+         tNode parent = root; // sets the parent equal to the root node
+            
+            for (int i = 0; i < line.length(); i++) { // go through each character of the word
                char current = line.charAt(i);
-               // check if the parent has a child
-               Boolean check = parent.hasChild(current);
-               // if it does we get the child
-               if(check) {
+                
+               if(parent.hasChild(current)) { // check if the parent has a child, if it does we get the child
                   parent = parent.getChild(current);
-               // if not we add child
-               } else {
+               } else { // if not we add child
                   parent = tNode.appendChild(parent, current, 0);  
                } 
            }
@@ -223,35 +226,37 @@ public class SmartWord {
       sc.close(); // closes scanner
    }
 
+
+
    // process old messages from oldMessageFile
    public static void processOldMessages(String oldMessageFile) throws IOException {
       File oldF = new File(oldMessageFile);
       Scanner sc2 = new Scanner(oldF);
 
+      /* loops until end of the file */
       while(sc2.hasNext()) {
-         String line = sc2.next();
-         //String[] str = line.split(" ");
+         String w = sc2.next();
 
          tNode parent = root; // sets the parent equal to the root node
 
-            line = line.replaceAll("[^a-zA-Z]", "").toLowerCase(); // Gets rid of weird characters
-            for (int i = 0; i < line.length(); i++) { // go through each character of the word
-               char current = line.charAt(i);
+         w = w.replaceAll("[^a-zA-Z]", "").toLowerCase(); // Gets rid of weird characters
+         for (int i = 0; i < w.length(); i++) { // go through each character of the word
+            char current = w.charAt(i);
             
-               /* check if the parent has a child, if it does we get the child */
-               if(parent.hasChild(current)) {
-                  parent = parent.getChild(current);
-               } else { // if not we add child
-                  parent = tNode.appendChild(parent, current, 0);  
-               } 
-		    }
-             
+            /* check if the parent has a child, if it does we get the child */
+            if(parent.hasChild(current)) {
+               parent = parent.getChild(current);
+            } else { // if not we add child
+               parent = tNode.appendChild(parent, current, 0);  
+            }
+         }
          parent.count++; // mark the occurences of word      
          parent.setEndOfWord(true); // mark the ending of the word 
 	  }
       sc2.close(); // closes scanner
-
    }
+
+
 
    // based on a letter typed in by the user, return 3 word guesses in an array
    // letter: letter typed in by the user
