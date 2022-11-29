@@ -199,7 +199,7 @@ public class SmartWord {
 
 
    // initialize SmartWord with a file of English words
-   public static void smartWord(String wordFile) throws IOException {
+   public SmartWord(String wordFile) throws IOException {
       File wordF = new File(wordFile);
       Scanner sc = new Scanner(wordF);
 
@@ -229,7 +229,7 @@ public class SmartWord {
 
 
    // process old messages from oldMessageFile
-   public static void processOldMessages(String oldMessageFile) throws IOException {
+   public void processOldMessages(String oldMessageFile) throws IOException {
       File oldF = new File(oldMessageFile);
       Scanner sc2 = new Scanner(oldF);
 
@@ -297,8 +297,8 @@ public class SmartWord {
    
    public static void main (String[] args) throws IOException {
       root = new tNode('*', 0); // creates the root tNode
-      smartWord(args[0]);
-      processOldMessages(args[1]);
+      //smartWord(args[0]);
+      //processOldMessages(args[1]);
       
       System.out.println("output: \n" + root.toString());
 
