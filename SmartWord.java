@@ -194,7 +194,7 @@ public class SmartWord {
 
 
    // initialize SmartWord with a file of English words
-   public static void SmartWord(String wordFile) throws IOException {
+   public static void smartWord(String wordFile) throws IOException {
       File wordF = new File(wordFile);
       Scanner sc = new Scanner(wordF);
 
@@ -228,16 +228,15 @@ public class SmartWord {
       File oldF = new File(oldMessageFile);
       Scanner sc2 = new Scanner(oldF);
 
-      while(sc2.hasNextLine()) {
-         String line = sc2.nextLine();
-         String[] str = line.split(" ");
+      while(sc2.hasNext()) {
+         String line = sc2.next();
+         //String[] str = line.split(" ");
 
          tNode parent = root; // sets the parent equal to the root node
 
-         for (String s : str) {
-            s = s.replaceAll("[^a-zA-Z]", "").toLowerCase(); // Gets rid of weird characters
-            for (int i = 0; i < s.length(); i++) { // go through each character of the word
-               char current = s.charAt(i);
+            line = line.replaceAll("[^a-zA-Z]", "").toLowerCase(); // Gets rid of weird characters
+            for (int i = 0; i < line.length(); i++) { // go through each character of the word
+               char current = line.charAt(i);
             
                /* check if the parent has a child, if it does we get the child */
                if(parent.hasChild(current)) {
@@ -246,11 +245,12 @@ public class SmartWord {
                   parent = tNode.appendChild(parent, current, 0);  
                } 
 		    }
-         }     
+             
          parent.count++; // mark the occurences of word      
          parent.setEndOfWord(true); // mark the ending of the word 
 	  }
       sc2.close(); // closes scanner
+
    }
 
    // based on a letter typed in by the user, return 3 word guesses in an array
@@ -292,10 +292,10 @@ public class SmartWord {
    
    public static void main (String[] args) throws IOException {
       root = new tNode('*', 0); // creates the root tNode
-      SmartWord(args[0]);
+      smartWord(args[0]);
       processOldMessages(args[1]);
-
-       System.out.println("output:");
+      
+      System.out.println("output: \n" + root.toString());
 
    }
 
