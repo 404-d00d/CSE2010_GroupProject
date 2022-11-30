@@ -132,13 +132,21 @@ public class SmartWord {
 
       /* Using post-order traversal, finds each leaf and adds to guesses if it is used frequently */
       public static void addGuesses(tNode n) {
+         // for(tNode node: n.getChildren()) {
+         //    System.out.println("children of s: " + node.getLetter());
+         // }
          for (tNode t : n.getChildren()) {
-            addGuesses(n);
+            // System.out.println("child: " + t.getLetter());
+            addGuesses(t);
          }
+
+         // System.out.print("free!");
+
 
          /* if leaf node */
          if (n.getEndOfWord() == true) {
             int i = 0;
+            // System.out.print("Is an end of word");
 
             /* adds n into wordNodes in descending order */
             for (tNode tn : wordNodes) {
@@ -156,7 +164,12 @@ public class SmartWord {
 
          /* adds the top 3 in wordNodes to guesses */
          for (int i = 0; i < guesses.length; i++) {
+            if(i >= wordNodes.size()) {
+               break;
+
+            }
             guesses[i] = getWord(wordNodes.get(i));
+            // System.out.println(guesses[i]);
          }
          wordNodes.clear();
 	  }
@@ -283,7 +296,7 @@ public class SmartWord {
             char current = w.charAt(i);
             
             /* check if the parent has a child, if it does we get the child */
-            if(parent.hasChild(parent, current)) {
+            if(tNode.hasChild(parent, current)) {
                parent = parent.getChild(current);
             } else { // if not we add child
                parent = tNode.appendChild(parent, current, 0);  
@@ -302,6 +315,8 @@ public class SmartWord {
    // letterPosition:  position of the letter in the word, starts from 0
    // wordPosition: position of the word in a message, starts from 0
    public String[] guess(char letter,  int letterPosition, int wordPosition) {
+
+      // System.out.println(root.toString());
       Queue<tNode> queue = new LinkedList<>();
       queue.add(root); // adds root to queue
       while (!queue.isEmpty()) {
@@ -312,6 +327,12 @@ public class SmartWord {
 
             /* if t is right level and right letter, searches subtree for guesses*/
             if (tNode.getRank(t) == letterPosition && t.getLetter() == letter) {
+               // System.out.println("letter: " + letter + " word Position: " + wordPosition);
+               // System.out.println("t: " + t.getLetter() + "lp: " +  letterPosition);
+               // System.out.println("rank of t: " + tNode.getRank(t));
+               // for(tNode node: t.getChildren()) {
+               //    System.out.println("children: " + node.getLetter());
+               // }
                tNode.addGuesses(t);
             }
 
@@ -346,8 +367,8 @@ public class SmartWord {
    // b.         false               null
    // c.         false               correct word
    public void feedback(boolean isCorrectGuess, String correctWord) {
-       if((isCorrectGuess == false) && (correctWord == null)) {
-       	   return;
+      if((isCorrectGuess == false) && (correctWord == null)) {
+         return;
       }
 
       else if((isCorrectGuess == false) && (correctWord != null)) {
