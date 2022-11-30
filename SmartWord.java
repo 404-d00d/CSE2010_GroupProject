@@ -347,20 +347,16 @@ public class SmartWord {
    // c.         false               correct word
    public void feedback(boolean isCorrectGuess, String correctWord) {
        if((isCorrectGuess == false) && (correctWord == null)) {
+       	   return;
+      }
+
+      else if((isCorrectGuess == false) && (correctWord != null)) {
          badGuess.add(correctWord);
       }
 
-      if((isCorrectGuess == false) && (correctWord != null)) {
-         badGuess.add(correctWord);
-      }
-
-      if((isCorrectGuess) && (correctWord != null)) {
+      else if((isCorrectGuess) && (correctWord != null)) {
          goodGuess.add(correctWord);
       }
   
-   }
-   
-   public static void main (String[] args) throws IOException {
-    
    }
 }
