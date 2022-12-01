@@ -18,9 +18,9 @@ public class SmartWord {
    public static ArrayList<tNode> wordNodes = new ArrayList<>();
    public static ArrayList<String> badGuess = new ArrayList<>(); // list of bag guesses
    public static ArrayList<String> goodGuess = new ArrayList<>(); // list of good guesses
-   
+	
 
-   public static class tNode { // tree class
+   public static class tNode implements Comparable<tNode>{ // tree class
       char letter;
       tNode parent;
       int count;
@@ -61,7 +61,7 @@ public class SmartWord {
          if ((n.letter == s)) { // base case
             return n;
          } else {
-          for (tNode c : n.children) { // loops through each node in the children list for node n
+		    for (tNode c : n.children) { // loops through each node in the children list for node n
                tNode vistedNode = findNode(c, s); // makes the problem smaller
                if (vistedNode != null) { // ensures vistedNode isn't null to avoid nullPointerException
                   return vistedNode;
@@ -72,11 +72,22 @@ public class SmartWord {
       }
 
 
+      @Override
+      public int compareTo(tNode t) {
+         if (this.getCount() > t.getCount()) {
+            return 1;
+         } else if (this.getCount() < t.getCount()) {
+            return -1;
+         } 
+         return 0;
+      }
+
+
       public static Boolean checkNode(tNode n, char s) { // finds node with item equal to s using In-Order traversal
          if ((n.letter == s)) { // base case
             return true;
          } else {
-          for (tNode c : n.children) { // loops through each node in the children list for node n
+		    for (tNode c : n.children) { // loops through each node in the children list for node n
                tNode vistedNode = findNode(c, s); // makes the problem smaller
                if (vistedNode != null) { // ensures vistedNode isn't null to avoid nullPointerException
                   return true;
@@ -132,25 +143,17 @@ public class SmartWord {
 
       /* Using post-order traversal, finds each leaf and adds to guesses if it is used frequently */
       public static void addGuesses(tNode n) {
-         // for(tNode node: n.getChildren()) {
-         //    System.out.println("children of s: " + node.getLetter());
-         // }
          for (tNode t : n.getChildren()) {
-            // System.out.println("child: " + t.getLetter());
             addGuesses(t);
          }
-
-         // System.out.print("free!");
-
 
          /* if leaf node */
          if (n.getEndOfWord() == true) {
             int i = 0;
-            // System.out.print("Is an end of word");
 
             /* adds n into wordNodes in descending order */
             for (tNode tn : wordNodes) {
-               if (n.getCount() >= tn.getCount()) { // if n's count is >= tn's count, adds it in at index i
+               if (n.compareTo(tn) == 1) { // if n's count is >= tn's count, adds it in at index i
                   wordNodes.add (i, n);
                   break;
                } else {
@@ -164,26 +167,18 @@ public class SmartWord {
 
          /* adds the top 3 in wordNodes to guesses */
          for (int i = 0; i < guesses.length; i++) {
-            int nonVal = 0;
             if(i >= wordNodes.size()) {
                break;
 
             }
-            // go through badGuess list, if any of the words match with current one, add counter to not valid guess.
-            for (int a = 0; a < badGuess.size(); a++) {
-               if (getWord(wordNodes.get(i)).equals(badGuess.get(a))) {
-                  nonVal++;
-                  break;
-               }
-            }
-            // if no bad word matches with current wordNode, add to guesses
-            if (nonVal==0) {
-               guesses[i] = getWord(wordNodes.get(i));
-            }
-            // System.out.println(guesses[i]);
+            guesses[i] = getWord(wordNodes.get(i));
          }
-         wordNodes.clear();
-     }
+         /*for (tNode p : wordNodes) {
+            System.out.print(getWord(p) + ", " + p.getCount() + "; ");
+         }
+         System.out.println();
+         System.out.println("WordNodes SIZE: " + wordNodes.size());*/
+	  }
 
 
       public static String getWord (tNode t) {
@@ -195,7 +190,7 @@ public class SmartWord {
             t = t.getParent();
          }
          return s;
-     }
+	  }
 
 
       /* checks if there is a child */
@@ -315,7 +310,7 @@ public class SmartWord {
          }
          parent.count++; // mark the occurences of word      
          parent.setEndOfWord(true); // mark the ending of the word 
-     }
+	  }
       sc2.close(); // closes scanner
    }
 
@@ -331,34 +326,31 @@ public class SmartWord {
       Queue<tNode> queue = new LinkedList<>();
       queue.add(root); // adds root to queue
       while (!queue.isEmpty()) {
-         //int num = queue.size(); // size of queue
-         //while (num > 0) {
+         int num = queue.size(); // size of queue
+         while (num > 0) {
             tNode t = queue.peek(); // t is set to first item in queue
             queue.remove();         // removes an item from queue and adds it to str
 
             /* if t is right level and right letter, searches subtree for guesses*/
-            if (tNode.getRank(t) == letterPosition && t.getLetter() == letter) {
-               // System.out.println("letter: " + letter + " word Position: " + wordPosition);
-               // System.out.println("t: " + t.getLetter() + "lp: " +  letterPosition);
-               // System.out.println("rank of t: " + tNode.getRank(t));
-               // for(tNode node: t.getChildren()) {
-               //    System.out.println("children: " + node.getLetter());
-               // }
+            if (tNode.getRank(t)-1 == letterPosition && t.getLetter() == letter) {
                tNode.addGuesses(t);
-            }
-
-            /* if all at level letterPosition have been searched through, stops the search */
-            if (tNode.getRank(t) > letterPosition) {
-               queue.clear(); // clears queue
-               break;
             }
 
             for (tNode c : t.children) { // adds each child of t into the queue
                queue.add(c);
+			}
+
+            /* if all at level letterPosition have been searched through, stops the search */
+            if (tNode.getRank(t)-1 > letterPosition) {
+               queue.clear(); // clears queue
+               break;
             }
-            //num--; 
-         //}
+            num--; 
+            wordNodes.clear();
+         }
       }
+      //System.out.println("LETTER: " + letter + "   letterPOS " + letterPosition + "   wordPOS " + wordPosition);
+      //System.out.println("1 " + guesses[0] + " 2 " + guesses[1] + " 3 " + guesses[2]);
       return guesses;
    }
 
