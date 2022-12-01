@@ -164,11 +164,21 @@ public class SmartWord {
 
          /* adds the top 3 in wordNodes to guesses */
          for (int i = 0; i < guesses.length; i++) {
+            int nonVal = 0;
             if(i >= wordNodes.size()) {
                break;
 
             }
-            guesses[i] = getWord(wordNodes.get(i));
+            // go through badGuess list, if any of the words match with current one, add counter to not valid guess.
+            for (int a = 0; a < badGuess.size(); a++) {
+               if (getWord(wordNodes.get(i)).equals(badGuess.get(a))) {
+                  nonVal++;
+               }
+            }
+            // if no bad word matches with current wordNode, add to guesses
+            if (nonVal==0) {
+               guesses[i] = getWord(wordNodes.get(i));
+            }
             // System.out.println(guesses[i]);
          }
          wordNodes.clear();
