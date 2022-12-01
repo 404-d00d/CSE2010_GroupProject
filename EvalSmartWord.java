@@ -170,6 +170,7 @@ public class EvalSmartWord
         System.out.println("Used memory in bytes: " + memory);
         //OverAll Score
         System.out.printf("Overall Score: %.4f\n",accuracy*accuracy/Math.sqrt(avgTime * memory));
+        System.out.println("total seconds: "+totalElapsedTime/1.0E9);
 
 	SmartWord sw2 = sw;  // keep sw used to avoid garbage collection of sw
     }
