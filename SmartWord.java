@@ -18,7 +18,7 @@ public class SmartWord {
    public static ArrayList<tNode> wordNodes = new ArrayList<>();
    public static ArrayList<String> badGuess = new ArrayList<>(); // list of bag guesses
    public static ArrayList<String> goodGuess = new ArrayList<>(); // list of good guesses
-	
+   
 
    public static class tNode { // tree class
       char letter;
@@ -61,7 +61,7 @@ public class SmartWord {
          if ((n.letter == s)) { // base case
             return n;
          } else {
-		    for (tNode c : n.children) { // loops through each node in the children list for node n
+          for (tNode c : n.children) { // loops through each node in the children list for node n
                tNode vistedNode = findNode(c, s); // makes the problem smaller
                if (vistedNode != null) { // ensures vistedNode isn't null to avoid nullPointerException
                   return vistedNode;
@@ -76,7 +76,7 @@ public class SmartWord {
          if ((n.letter == s)) { // base case
             return true;
          } else {
-		    for (tNode c : n.children) { // loops through each node in the children list for node n
+          for (tNode c : n.children) { // loops through each node in the children list for node n
                tNode vistedNode = findNode(c, s); // makes the problem smaller
                if (vistedNode != null) { // ensures vistedNode isn't null to avoid nullPointerException
                   return true;
@@ -173,6 +173,7 @@ public class SmartWord {
             for (int a = 0; a < badGuess.size(); a++) {
                if (getWord(wordNodes.get(i)).equals(badGuess.get(a))) {
                   nonVal++;
+                  break;
                }
             }
             // if no bad word matches with current wordNode, add to guesses
@@ -182,7 +183,7 @@ public class SmartWord {
             // System.out.println(guesses[i]);
          }
          wordNodes.clear();
-	  }
+     }
 
 
       public static String getWord (tNode t) {
@@ -194,7 +195,7 @@ public class SmartWord {
             t = t.getParent();
          }
          return s;
-	  }
+     }
 
 
       /* checks if there is a child */
@@ -314,7 +315,7 @@ public class SmartWord {
          }
          parent.count++; // mark the occurences of word      
          parent.setEndOfWord(true); // mark the ending of the word 
-	  }
+     }
       sc2.close(); // closes scanner
    }
 
@@ -330,8 +331,8 @@ public class SmartWord {
       Queue<tNode> queue = new LinkedList<>();
       queue.add(root); // adds root to queue
       while (!queue.isEmpty()) {
-         int num = queue.size(); // size of queue
-         while (num > 0) {
+         //int num = queue.size(); // size of queue
+         //while (num > 0) {
             tNode t = queue.peek(); // t is set to first item in queue
             queue.remove();         // removes an item from queue and adds it to str
 
@@ -354,9 +355,9 @@ public class SmartWord {
 
             for (tNode c : t.children) { // adds each child of t into the queue
                queue.add(c);
-			}
-            num--; 
-         }
+            }
+            //num--; 
+         //}
       }
       return guesses;
    }
