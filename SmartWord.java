@@ -135,6 +135,7 @@ public class SmartWord {
          // // create new list of characters and string to get word
          // String nuWord = "";
          // ArrayList<Character> charString = new ArrayList<Character>();
+         // if (c.getEndOfWord() == true) {
          // while (c.getLetter() != '*') { // gets parents of nodes to create full word
          //    if (c.getLetter() == '*') {
          //       break;
@@ -147,6 +148,7 @@ public class SmartWord {
          // // goes backwards through the list to form the word properly.
          // for (int a = charString.size()-1; a >= 0; a--) {
          //    nuWord += charString.get(a).toString();
+         // }
          // }
          // System.out.println(nuWord);
       }
