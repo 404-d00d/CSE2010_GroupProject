@@ -90,67 +90,76 @@ public class SmartWord {
       }
 
       
-      public static void addGuesses(tNode c) {
-         // Only one child per node, which means only one leter
-         for(tNode child : c.getChildren()) {
-            addGuesses(child);
-            //System.out.print(child.getLetter()+", ");
-         }
-         //System.out.println();
+            public static void addGuesses(tNode c) {
+         // // Only one child per node, which means only one leter
+         // for(tNode child : c.getChildren()) {
+         //    addGuesses(child);
+         //    //System.out.print(child.getLetter()+", ");
+         // }
+         // //System.out.println();
 
-         if (current.getEndOfWord() == true) {
-            int i = 0;
+         // if (current.getEndOfWord() == true) {
+         //    int i = 0;
 
 
 
-            /* adds n into wordNodes in descending order */
-            for (tNode tn : wordNodes) {
-               if (current.getCount() >= tn.getCount()) { // if n's count is >= tn's count, adds it in at index i
-                  wordNodes.add (i, current);
-                  break;
-               } else {
-                  i++;
-               }
-            }
-            if (!wordNodes.contains(current) || wordNodes.isEmpty()) { // if n has not been added, adds it to the end
-               wordNodes.add(current); // adds n to wordNodes
-            }
-         }
-
-         // debugging print statements
-         for (int a = 0; a < wordNodes.size(); a++) {
-            System.out.print(getWord(wordNodes.get(a))+", ");
-         }
-         System.out.println();
-
-         /* adds the top 3 in wordNodes to guesses */
-         for (int i = 0; i < guesses.length; i++) {
-            if(i >= wordNodes.size()) {
-               break;
-            }
-            guesses[i] = getWord(wordNodes.get(i));
-
-         }
-
-         // // create new list of characters and string to get word
-         // String nuWord = "";
-         // ArrayList<Character> charString = new ArrayList<Character>();
-         // if (c.getEndOfWord() == true) {
-         //    while (c.getLetter() != '*') { // gets parents of nodes to create full word
-         //       if (c.getLetter() == '*') {
+         //    /* adds n into wordNodes in descending order */
+         //    for (tNode tn : wordNodes) {
+         //       if (current.getCount() >= tn.getCount()) { // if n's count is >= tn's count, adds it in at index i
+         //          wordNodes.add (i, current);
          //          break;
-         //       }
-         //       else {
-         //          charString.add(c.getLetter());
-         //          c = c.getParent();
+         //       } else {
+         //          i++;
          //       }
          //    }
+         //    if (!wordNodes.contains(current) || wordNodes.isEmpty()) { // if n has not been added, adds it to the end
+         //       wordNodes.add(current); // adds n to wordNodes
+         //    }
          // }
-         // // goes backwards through the list to form the word properly.
-         // for (int a = charString.size()-1; a >= 0; a--) {
-         //    nuWord += charString.get(a).toString();
+
+         // // debugging print statements
+         // for (int a = 0; a < wordNodes.size(); a++) {
+         //    System.out.print(getWord(wordNodes.get(a))+", ");
          // }
-         // System.out.println(nuWord);
+         // System.out.println();
+
+         // /* adds the top 3 in wordNodes to guesses */
+         // for (int i = 0; i < guesses.length; i++) {
+         //    if(i >= wordNodes.size()) {
+         //       break;
+         //    }
+         //    guesses[i] = getWord(wordNodes.get(i));
+
+         // }
+
+         // create new list of characters and string to get word
+         String nuWord = "";
+         ArrayList<Character> charString = new ArrayList<Character>();
+         if (c.getEndOfWord() == true) {
+            while (c.getLetter() != '*') { // gets parents of nodes to create full word
+               if (c.getLetter() == '*') {
+                  break;
+               }
+               else {
+                  charString.add(c.getLetter());
+                  c = c.getParent();
+               }
+            }
+            for (int a = charString.size()-1; a >= 0; a--) {
+               nuWord += charString.get(a).toString();
+            }
+            System.out.println(nuWord);
+         }
+         words.add(nuWord);
+         int d = 0;
+         for (int b = 0; b < guesses.length; b++) {
+            if (b >= words.size()) {
+               break;
+            }
+            guesses[b] = words.get(d);
+            d++;
+         }
+         // goes backwards through the list to form the word properly.
       }
 
       public static String getWord (tNode t) {
