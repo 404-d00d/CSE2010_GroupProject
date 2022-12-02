@@ -142,15 +142,12 @@ public class SmartWord {
          //       }
          //       else {
          //          charString.add(c.getLetter());
-         //          c.getParent();
-         //          System.out.print(c.getLetter()+" ");
+         //          c = c.getParent();
          //       }
          //    }
          // }
-         // System.out.println();
          // // goes backwards through the list to form the word properly.
          // for (int a = charString.size()-1; a >= 0; a--) {
-         //    System.out.print(charString.get(a)+" ");
          //    nuWord += charString.get(a).toString();
          // }
          // System.out.println(nuWord);
