@@ -118,10 +118,10 @@ public class SmartWord {
          }
 
          // debugging print statements
-         // for (int a = 0; a < wordNodes.size(); a++) {
-         //    System.out.print(wordNodes.get(a)+", ");
-         // }
-         // System.out.println();
+         for (int a = 0; a < wordNodes.size(); a++) {
+            System.out.print(getWord(wordNodes.get(a))+", ");
+         }
+         System.out.println();
 
          /* adds the top 3 in wordNodes to guesses */
          for (int i = 0; i < guesses.length; i++) {
@@ -143,11 +143,14 @@ public class SmartWord {
          //       else {
          //          charString.add(c.getLetter());
          //          c.getParent();
+         //          System.out.print(c.getLetter()+" ");
          //       }
          //    }
          // }
+         // System.out.println();
          // // goes backwards through the list to form the word properly.
          // for (int a = charString.size()-1; a >= 0; a--) {
+         //    System.out.print(charString.get(a)+" ");
          //    nuWord += charString.get(a).toString();
          // }
          // System.out.println(nuWord);
