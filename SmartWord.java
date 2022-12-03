@@ -22,20 +22,34 @@ public class SmartWord {
    public static ArrayList<String> badGuess = new ArrayList<>(); // list of bag guesses
    public static ArrayList<String> goodGuess = new ArrayList<>(); // list of good guesses
 
-
+ 
    public static class tNode { // tree class
       char letter;
       tNode parent;
       int count;
       List<tNode> children;
       boolean endOfWord = false;
+      String fullWord; // only used for wordNodes, NEVER for the main tree
+
+         // // Need to fix this
+         // @Override
+         // public int compareTo(tNode t) {
+         //    if (this.count > t.count) {
+         //       return 1;
+         //    }
+         //    else if (this.count < t.count) {
+         //       return -1;
+         //    }
+         //    else {
+         //       return 0;
+         //    }
+         // }
 
       public tNode (char letter, int count) { // constructor for tree node
         this.count = count;
         this.letter = letter;
         this.children = new ArrayList<tNode>();
       }
- 
 
        public static tNode appendChild(tNode p, char c, int count) { // adds a child to tree
          tNode t = new tNode(c, count); // creates new tree node
@@ -117,13 +131,13 @@ public class SmartWord {
          //       break;
          //    }
          //    guesses[i] = getWord(wordNodes.get(i));
-
          // }
 
          // grabs entire children of node and runs recursive function
          for (tNode e : c.getChildren()) {
             // base case, if word is true, go up to root node and get characters
             if (e.getEndOfWord() == true) {
+               int rank = e.getCount();
                ArrayList<Character> letterList = new ArrayList<>();
                String word = "";
                // grabs parent of node and adds letter to list
@@ -135,6 +149,34 @@ public class SmartWord {
                for (int j = letterList.size()-1; j >= 0; j--) {
                   word += letterList.get(j);
                }
+               tNode wurd = new tNode('-', rank);
+               wurd.fullWord = word;
+               wordNodes.add(wurd); 
+
+               // // Needs compareTo to be overridden
+               // wordNodes.sort();
+
+               for (int i = 0; i < guesses.length; i++) {
+                  if(i >= wordNodes.size()) {
+                     break;
+                  }
+                  guesses[i] = wordNodes.get(i).fullWord;
+               }
+
+               // int i = 0;
+               // /* adds n into wordNodes in descending order */
+               // for (tNode tn : wordNodes) {
+               //    if (current.getCount() >= tn.getCount()) { // if n's count is >= tn's count, adds it in at index i
+               //       wordNodes.add (i, current);
+               //       break;
+               //    } else {
+               //       i++;
+               //    }
+               // }
+               // if (!wordNodes.contains(current) || wordNodes.isEmpty()) { // if n has not been added, adds it to the end
+               //    wordNodes.add(current); // adds n to wordNodes
+               // }
+
             }
             else {
                addGuesses(e);
