@@ -120,14 +120,25 @@ public class SmartWord {
 
          // }
 
+         // grabs entire children of node and runs recursive function
          for (tNode e : c.getChildren()) {
-
-         }
-         if () {
-
-         }
-         else {
-
+            // base case, if word is true, go up to root node and get characters
+            if (e.getEndOfWord() == true) {
+               ArrayList<Character> letterList = new ArrayList<>();
+               String word = "";
+               // grabs parent of node and adds letter to list
+               while (e.getLetter() != '*') {
+                  letterList.add(e.getLetter());
+                  e = e.getParent();
+               }
+               // characters are added in reverse order to create proper word
+               for (int j = letterList.size()-1; j >= 0; j--) {
+                  word += letterList.get(j);
+               }
+            }
+            else {
+               addGuesses(e);
+            }
          }
       }
 
