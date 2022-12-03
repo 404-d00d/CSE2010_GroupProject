@@ -23,7 +23,7 @@ public class SmartWord {
    public static ArrayList<String> goodGuess = new ArrayList<>(); // list of good guesses
 
  
-   public static class tNode { // tree class
+   public static class tNode implements Comparable<tNode> { // tree class
       char letter;
       tNode parent;
       int count;
@@ -31,19 +31,19 @@ public class SmartWord {
       boolean endOfWord = false;
       String fullWord; // only used for wordNodes, NEVER for the main tree
 
-         // // Need to fix this
-         // @Override
-         // public int compareTo(tNode t) {
-         //    if (this.count > t.count) {
-         //       return 1;
-         //    }
-         //    else if (this.count < t.count) {
-         //       return -1;
-         //    }
-         //    else {
-         //       return 0;
-         //    }
-         // }
+         // Need to fix this
+         @Override
+         public int compareTo(tNode t) {
+            if (this.count > t.count) {
+               return 1;
+            }
+            else if (this.count < t.count) {
+               return -1;
+            }
+            else {
+               return 0;
+            }
+         }
 
       public tNode (char letter, int count) { // constructor for tree node
         this.count = count;
@@ -137,7 +137,7 @@ public class SmartWord {
          for (tNode e : c.getChildren()) {
             // base case, if word is true, go up to root node and get characters
             if (e.getEndOfWord() == true) {
-               int rank = e.getCount();
+               int wordOccurence = e.getCount();
                ArrayList<Character> letterList = new ArrayList<>();
                String word = "";
                // grabs parent of node and adds letter to list
@@ -149,12 +149,12 @@ public class SmartWord {
                for (int j = letterList.size()-1; j >= 0; j--) {
                   word += letterList.get(j);
                }
-               tNode wurd = new tNode('-', rank);
+               tNode wurd = new tNode('-', wordOccurence);
                wurd.fullWord = word;
                wordNodes.add(wurd); 
 
-               // // Needs compareTo to be overridden
-               // wordNodes.sort();
+               // Needs compareTo to be overridden
+               Collections.sort(wordNodes);
 
                for (int i = 0; i < guesses.length; i++) {
                   if(i >= wordNodes.size()) {
