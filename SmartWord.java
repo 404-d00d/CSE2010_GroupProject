@@ -103,7 +103,7 @@ public class SmartWord {
       }
 
       
-      public static void addGuesses(tNode c) {
+      public static void addGuesses(tNode c, int k) {
          // for(tNode child : c.getChildren()) {
          //    addGuesses(child);
          // }
@@ -136,7 +136,7 @@ public class SmartWord {
          // grabs entire children of node and runs recursive function
          for (tNode e : c.getChildren()) {
             // base case, if word is true, go up to root node and get characters
-            if (e.getEndOfWord() == true) {
+            if (e.getEndOfWord() == true || k > 5) {
                int wordOccurence = e.getCount();
                ArrayList<Character> letterList = new ArrayList<>();
                String word = "";
@@ -192,7 +192,7 @@ public class SmartWord {
 
             }
             else {
-               addGuesses(e);
+               addGuesses(e, k++);
             }
          }
       }
@@ -392,7 +392,7 @@ public class SmartWord {
       }
       if(SmartWord.tNode.hasChild(current, letter)){
          current = current.getChild(letter);
-         tNode.addGuesses(current);
+         tNode.addGuesses(current, 0);
          tNode.createGuesses();
 
       }
