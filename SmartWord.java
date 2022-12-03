@@ -402,11 +402,24 @@ public class SmartWord {
 
    public void feedback(boolean isCorrectGuess, String correctWord) {
       if((isCorrectGuess == false) && (correctWord == null)) {
-         return;
+         for(String guess : guesses) {
+            badGuess.add(guess);
+         }
       }
 
       else if((isCorrectGuess == false) && (correctWord != null)) {
-         badGuess.add(correctWord);
+         tNode parent = root; // sets the parent equal to the root node
+           
+            for (int i = 0; i < correctWord.length(); i++) { // go through each character of the word
+               char current = correctWord.charAt(i);
+               if(tNode.hasChild(parent, current)) { // check if the parent has a child, if it does we get the child
+                  parent = parent.getChild(current);
+               } else { // if not we add child
+                  parent = tNode.appendChild(parent, current, 0);  
+               }
+           }
+           parent.count++; // mark the occurences of word
+           parent.setEndOfWord(true); // mark the ending of the word
       }
 
       else if((isCorrectGuess) && (correctWord != null)) {
