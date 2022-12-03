@@ -103,126 +103,49 @@ public class SmartWord {
       }
 
       
-      public static void addGuesses(tNode c, int k) {
-         // for(tNode child : c.getChildren()) {
-         //    addGuesses(child);
-         // }
-
-         // if (current.getEndOfWord() == true) {
-         //    int i = 0;
-
-         //    /* adds n into wordNodes in descending order */
-         //    for (tNode tn : wordNodes) {
-         //       if (current.getCount() >= tn.getCount()) { // if n's count is >= tn's count, adds it in at index i
-         //          wordNodes.add (i, current);
-         //          break;
-         //       } else {
-         //          i++;
-         //       }
-         //    }
-         //    if (!wordNodes.contains(current) || wordNodes.isEmpty()) { // if n has not been added, adds it to the end
-         //       wordNodes.add(current); // adds n to wordNodes
-         //    }
-         // }
-
-         // /* adds the top 3 in wordNodes to guesses */
-         // for (int i = 0; i < guesses.length; i++) {
-         //    if(i >= wordNodes.size()) {
-         //       break;
-         //    }
-         //    guesses[i] = getWord(wordNodes.get(i));
-         // }
-
+      public static void addGuesses(tNode c, int max) {
          // grabs entire children of node and runs recursive function
          for (tNode e : c.getChildren()) {
             // base case, if word is true, go up to root node and get characters
-            if (e.getEndOfWord() == true || k > 5) {
-               int wordOccurence = e.getCount();
-               ArrayList<Character> letterList = new ArrayList<>();
-               String word = "";
-               // grabs parent of node and adds letter to list
-               // while (e.getLetter() != '*') {
-               //    letterList.add(e.getLetter());
-               //    e = e.getParent();
-               // }
-               // // characters are added in reverse order to create proper word
-               // for (int j = letterList.size()-1; j >= 0; j--) {
-               //    word += letterList.get(j);
-               // }
-               word = getWord(e);
-               tNode wurd = new tNode('-', wordOccurence);
-               wurd.fullWord = word;
-               wordNodes.add(wurd); 
+            if (e.getEndOfWord() == true && getRank(e) < max) {
+//System.out.println("WORD ADDED: " + getWord(e) + "  " + e.getCount());
+               wordNodes.add(e); 
 
-               Collections.sort(wordNodes);
+               Collections.sort(wordNodes, Collections.reverseOrder());
 
-               // if (badGuess.size() >= 1) {
-               //    for (int f = 0; f < badGuess.size(); f++) {
-               //       System.out.println("wordNodes size = "+wordNodes.size());
-               //       System.out.println("badGuess size = "+badGuess.size());
-               //       if (wordNodes.get(0).fullWord.equals(badGuess.get(f))) {
-               //          wordNodes.remove(0);
-               //       }
-               //    }
-               // }
-
-               for (int i = 0; i < guesses.length; i++) {
-                  if(i >= wordNodes.size()) {
-                     break;
-                  }
-                  guesses[i] = wordNodes.get(i).fullWord;
-               }
-
-               for (int z = 0; z < wordNodes.size(); z++) {
-                  wordNodes.remove(0);
-               }
-
-               // int i = 0;
-               // /* adds n into wordNodes in descending order */
-               // for (tNode tn : wordNodes) {
-               //    if (current.getCount() >= tn.getCount()) { // if n's count is >= tn's count, adds it in at index i
-               //       wordNodes.add (i, current);
-               //       break;
-               //    } else {
-               //       i++;
-               //    }
-               // }
-               // if (!wordNodes.contains(current) || wordNodes.isEmpty()) { // if n has not been added, adds it to the end
-               //    wordNodes.add(current); // adds n to wordNodes
-               // }
-
+               
+//System.out.println("SIZE: " +wordNodes.size());
+            } else {
+               addGuesses(e, max);
             }
-            else {
-               addGuesses(e, k++);
-            }
+			
          }
+         /*int index = 0;
+         for (tNode tn : wordNodes) {
+            if(guesses[2] != null) {
+               break;
+            }
+
+            String word = getWord(tn);
+            if (!(badGuess.contains(word))) {
+               guesses[index] = word;
+               index++;
+            }
+         }*/
+		 int index = 0;
+         for(tNode tn : wordNodes) {
+            if (index >= 3) {
+               break;
+		    } else {
+               guesses[index] = getWord(wordNodes.get(index));
+			}
+			index++;
+		 }
+		 
+		 //guesses[1] = getWord(wordNodes.get(1));
+		 //guesses[2] = getWord(wordNodes.get(2));
       }
 
-      public static void createGuesses () {
-         // if (badGuess.size() > 0) {
-         //    for (int f = 0; f < badGuess.size(); f++) {
-         //       //System.out.println("wordNodes size = "+wordNodes.size());
-         //       //System.out.println("badGuess size = "+badGuess.size());
-         //       if (wordNodes.get(0).fullWord.equals(badGuess.get(f))) {
-         //          //wordNodes.remove(0);
-         //          System.out.println(badGuess.get(f)+" is a bad guess");
-         //       }
-         //    }
-         // }
-
-         // int curWord = 0;
-         // for (int i = 0; i < guesses.length; i++) {
-         //    if(i >= wordNodes.size()) {
-         //       break;
-         //    }
-         //    guesses[i] = wordNodes.get(curWord).fullWord;
-         //    curWord++;
-         // }
-
-         // for (int z = 0; z < wordNodes.size(); z++) {
-         //    wordNodes.remove(0);
-         // }
-      }
 
       public static String getWord (tNode t) {
          String s = "";
@@ -300,17 +223,6 @@ public class SmartWord {
       }
 
       public static void incremCount(tNode parent, String word) {
-         // for(tNode child : parent.children) {
-         //    for(int i = 0; i < word.length(); i++) {
-         //       char currentChild = word.charAt(i);
-         //       if(child.getLetter() == currentChild) {
-         //          incremCount(child, word);
-         //          if((child.getEndOfWord() == true) && (child.getLetter() == word.charAt(word.length() - 1))) {
-         //             child.count++;
-         //          }
-         //       }
-         //    }
-         // }
          for (int a = 0; a < word.length(); a++) {
             parent = parent.getChild(word.charAt(a));
          }
@@ -354,10 +266,6 @@ public class SmartWord {
       File oldF = new File(oldMessageFile);
       Scanner sc2 = new Scanner(oldF);
 
-      // for(int i = 0; i < guesses.length; i++) {
-      //    System.out.println(guesses[i]);
-      // }
-
       /* loops until end of the file */
       while(sc2.hasNext()) {
          String w = sc2.next();
@@ -382,24 +290,38 @@ public class SmartWord {
    }
 
 
+
    // based on a letter typed in by the user, return 3 word guesses in an array
    // letter: letter typed in by the user
    // letterPosition:  position of the letter in the word, starts from 0
    // wordPosition: position of the word in a message, starts from 0
    public String[] guess(char letter,  int letterPosition, int wordPosition) {
-      //System.out.println(root.getLetter());
+      guesses = new String[3];
       if(letterPosition == 0) {
          current = root;
       }
-      if(SmartWord.tNode.hasChild(current, letter)){
+      if(tNode.hasChild(current, letter)){
          current = current.getChild(letter);
-         tNode.addGuesses(current, 0);
-         //tNode.createGuesses();
+         int maxdepth = tNode.getRank(current) + 5;
+//System.out.println("LETTER: " + letter + ",  letterPosition: " + letterPosition + ",  wordPosition: " + wordPosition);
+//System.out.println("PATH: " + tNode.getWord(current));
+         tNode.addGuesses(current, maxdepth);
 
+
+/*for (tNode ghf : wordNodes) {
+	System.out.print(tNode.getWord(ghf) + ", " + ghf.getCount() + ";  ");
+}
+System.out.println();*/
+
+         wordNodes.clear();
+//System.out.println("CLEARED!");
+         //tNode.createGuesses();
       }
+//System.out.println("GUESSES: " + guesses[0] + ", " +  guesses[1] + ", " + guesses[2]);
       return guesses;
-      
    }
+
+
 
    public void feedback(boolean isCorrectGuess, String correctWord) {
       if((isCorrectGuess == false) && (correctWord == null)) {
