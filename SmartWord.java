@@ -258,6 +258,24 @@ public class SmartWord {
          }
          return sb.toString();
       }
+     
+      public void incremCount(tNode parent, String word) {
+
+         for(tNode child : parent.children) {
+            for(int i = 0; i < word.length(); i++) {
+               char currentChild = word.charAt(i);
+               
+               if(child.getLetter() == currentChild) {
+                  incremCount(child, word);
+
+                  if((child.getEndOfWord() == true) && (child.getLetter() == word.charAt(word.length() - 1))) {
+                     count++;
+                  }
+               }
+            }
+         }
+
+      }
    } /* end of tNode class */
 
 
