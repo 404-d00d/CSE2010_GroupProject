@@ -31,7 +31,7 @@ public class SmartWord {
       boolean endOfWord = false;
       String fullWord; // only used for wordNodes, NEVER for the main tree
 
-         // Need to fix this
+         /* compares nodes bases on occurences */
          @Override
          public int compareTo(tNode t) {
             if (this.count > t.count) {
@@ -104,85 +104,65 @@ public class SmartWord {
 
       
       public static void addGuesses(tNode c) {
-         // for(tNode child : c.getChildren()) {
-         //    addGuesses(child);
-         // }
+         Queue<tNode> queue = new LinkedList<>();
+         int maxDepth = getRank(c) + 5; // we only want to search for next 5 letters, average word is 5 letters
+         queue.add(c); // adds root to queue
+         while (!queue.isEmpty()) {
+            int num = queue.size(); // size of queue
+            while (num > 0) {
+               tNode t = queue.poll(); // Retrieves and removes the head of this queue, or returns null if this queue is empty.
 
-         // if (current.getEndOfWord() == true) {
-         //    int i = 0;
-
-         //    /* adds n into wordNodes in descending order */
-         //    for (tNode tn : wordNodes) {
-         //       if (current.getCount() >= tn.getCount()) { // if n's count is >= tn's count, adds it in at index i
-         //          wordNodes.add (i, current);
-         //          break;
-         //       } else {
-         //          i++;
-         //       }
-         //    }
-         //    if (!wordNodes.contains(current) || wordNodes.isEmpty()) { // if n has not been added, adds it to the end
-         //       wordNodes.add(current); // adds n to wordNodes
-         //    }
-         // }
-
-         // /* adds the top 3 in wordNodes to guesses */
-         // for (int i = 0; i < guesses.length; i++) {
-         //    if(i >= wordNodes.size()) {
-         //       break;
-         //    }
-         //    guesses[i] = getWord(wordNodes.get(i));
-         // }
-
-         // grabs entire children of node and runs recursive function
-         for (tNode e : c.getChildren()) {
-            // base case, if word is true, go up to root node and get characters
-            if (e.getEndOfWord() == true) {
-               int wordOccurence = e.getCount();
-               ArrayList<Character> letterList = new ArrayList<>();
-               String word = "";
-               // grabs parent of node and adds letter to list
-               while (e.getLetter() != '*') {
-                  letterList.add(e.getLetter());
-                  e = e.getParent();
+               /* base case */
+               if (getRank(t) > maxDepth) { // if t is out of bounds, stops searching
+                  queue.clear();
+                  break;
                }
-               // characters are added in reverse order to create proper word
-               for (int j = letterList.size()-1; j >= 0; j--) {
-                  word += letterList.get(j);
-               }
-               tNode wurd = new tNode('-', wordOccurence);
-               wurd.fullWord = word;
-               wordNodes.add(wurd); 
 
-               // Needs compareTo to be overridden
-               Collections.sort(wordNodes);
+               /* if t is end of word, adds word to wordNodes */
+			   if (t.getEndOfWord()) {
+                  int i = 0;
 
-               for (int i = 0; i < guesses.length; i++) {
-                  if(i >= wordNodes.size()) {
-                     break;
+                  /* adds t into wordNodes in descending order based on number of occurences*/
+                  for (tNode tn : wordNodes) {
+                     if (t.getCount() >= tn.getCount()) { // if t's count is >= tn's count, adds it in at index i
+                        wordNodes.add (i, t);
+                        break;
+                     } else {
+                        i++; // increments index
+                     }
                   }
-                  guesses[i] = wordNodes.get(i).fullWord;
+
+                  /* if t has not been added into wordNodes, adds it to the end*/
+                  if (!wordNodes.contains(t) || wordNodes.isEmpty()) { 
+                     wordNodes.add(t); // adds t to wordNodes
+                  }
                }
 
-               // int i = 0;
-               // /* adds n into wordNodes in descending order */
-               // for (tNode tn : wordNodes) {
-               //    if (current.getCount() >= tn.getCount()) { // if n's count is >= tn's count, adds it in at index i
-               //       wordNodes.add (i, current);
-               //       break;
-               //    } else {
-               //       i++;
-               //    }
-               // }
-               // if (!wordNodes.contains(current) || wordNodes.isEmpty()) { // if n has not been added, adds it to the end
-               //    wordNodes.add(current); // adds n to wordNodes
-               // }
-
+               /* adds children of t to the queue */
+               for (tNode child : t.children) { 
+                  queue.add(child);
+			   }
+               num--; 
             }
-            else {
-               addGuesses(e);
+         }
+
+         /* adds the top 3 in wordNodes to guesses */
+         int j = 0;
+         for (tNode n : wordNodes) {
+
+            /* break case */ 
+            if(guesses[2] != null) { // if guesses is full, stops filling
+               break;
+            }
+
+            /* adds word to guesses if it was not a bad guess before */
+            String word = getWord(wordNodes.get(j));
+            if (!(badGuess.contains(word))) { // if word was not a bad guess before, adds it to guesses
+               guesses[j] = word;
             }
          }
       }
+
 
       public static String getWord (tNode t) {
          String s = "";
@@ -209,7 +189,7 @@ public class SmartWord {
 
 
 
-      /* grabs the child */
+      /* returns the child with letter c */
       public tNode getChild(char c) {
          for(tNode child : children) {
             if(child.getLetter() == c) {
@@ -258,23 +238,24 @@ public class SmartWord {
          }
          return sb.toString();
       }
-     
-      public void incremCount(tNode parent, String word) {
 
+
+      /* increments occurences of word when guessed correctly */
+      public static void incremCount(tNode parent, String word) {
          for(tNode child : parent.children) {
             for(int i = 0; i < word.length(); i++) {
                char currentChild = word.charAt(i);
-               
+
+               /* finds next child */ 
                if(child.getLetter() == currentChild) {
                   incremCount(child, word);
 
                   if((child.getEndOfWord() == true) && (child.getLetter() == word.charAt(word.length() - 1))) {
-                     count++;
+                     child.setCount(child.getCount() + 1);
                   }
                }
             }
          }
-
       }
    } /* end of tNode class */
 
@@ -312,10 +293,6 @@ public class SmartWord {
       File oldF = new File(oldMessageFile);
       Scanner sc2 = new Scanner(oldF);
 
-      // for(int i = 0; i < guesses.length; i++) {
-      //    System.out.println(guesses[i]);
-      // }
-
       /* loops until end of the file */
       while(sc2.hasNext()) {
          String w = sc2.next();
@@ -345,15 +322,12 @@ public class SmartWord {
    // letterPosition:  position of the letter in the word, starts from 0
    // wordPosition: position of the word in a message, starts from 0
    public String[] guess(char letter,  int letterPosition, int wordPosition) {
-      //System.out.println(root.getLetter());
       if(letterPosition == 0) {
          current = root;
-      } else {
-         if(SmartWord.tNode.hasChild(current, letter)){
+      } 
+      if(SmartWord.tNode.hasChild(current, letter)){
             current = current.getChild(letter);
             tNode.addGuesses(current);
-
-         }
       }
 
       return guesses;
@@ -362,7 +336,9 @@ public class SmartWord {
 
    public void feedback(boolean isCorrectGuess, String correctWord) {
       if((isCorrectGuess == false) && (correctWord == null)) {
-         return;
+         for (String word : guesses) {
+            badGuess.add(word);
+         }
       }
 
       else if((isCorrectGuess == false) && (correctWord != null)) {
