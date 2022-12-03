@@ -242,19 +242,22 @@ public class SmartWord {
 
       /* increments occurences of word when guessed correctly */
       public static void incremCount(tNode parent, String word) {
-         for(tNode child : parent.children) {
-            for(int i = 0; i < word.length(); i++) {
-               char currentChild = word.charAt(i);
-
-               /* finds next child */ 
-               if(child.getLetter() == currentChild) {
-                  incremCount(child, word);
-
-                  if((child.getEndOfWord() == true) && (child.getLetter() == word.charAt(word.length() - 1))) {
-                     child.setCount(child.getCount() + 1);
-                  }
-               }
-            }
+         // for(tNode child : parent.children) {
+         //    for(int i = 0; i < word.length(); i++) {
+         //       char currentChild = word.charAt(i);
+         //       if(child.getLetter() == currentChild) {
+         //          incremCount(child, word);
+         //          if((child.getEndOfWord() == true) && (child.getLetter() == word.charAt(word.length() - 1))) {
+         //             child.count++;
+         //          }
+         //       }
+         //    }
+         // }
+         for (int a = 0; a < word.length(); a++) {
+            parent = parent.getChild(word.charAt(a));
+         }
+         if (parent.getEndOfWord() == true) {
+            parent.count++;
          }
       }
    } /* end of tNode class */
