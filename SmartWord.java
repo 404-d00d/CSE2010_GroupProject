@@ -141,14 +141,15 @@ public class SmartWord {
                ArrayList<Character> letterList = new ArrayList<>();
                String word = "";
                // grabs parent of node and adds letter to list
-               while (e.getLetter() != '*') {
-                  letterList.add(e.getLetter());
-                  e = e.getParent();
-               }
-               // characters are added in reverse order to create proper word
-               for (int j = letterList.size()-1; j >= 0; j--) {
-                  word += letterList.get(j);
-               }
+               // while (e.getLetter() != '*') {
+               //    letterList.add(e.getLetter());
+               //    e = e.getParent();
+               // }
+               // // characters are added in reverse order to create proper word
+               // for (int j = letterList.size()-1; j >= 0; j--) {
+               //    word += letterList.get(j);
+               // }
+               word = getWord(e);
                tNode wurd = new tNode('-', wordOccurence);
                wurd.fullWord = word;
                wordNodes.add(wurd); 
@@ -165,16 +166,16 @@ public class SmartWord {
                //    }
                // }
 
-               // for (int i = 0; i < guesses.length; i++) {
-               //    if(i >= wordNodes.size()) {
-               //       break;
-               //    }
-               //    guesses[i] = wordNodes.get(i).fullWord;
-               // }
+               for (int i = 0; i < guesses.length; i++) {
+                  if(i >= wordNodes.size()) {
+                     break;
+                  }
+                  guesses[i] = wordNodes.get(i).fullWord;
+               }
 
-               // for (int z = 0; z < wordNodes.size(); z++) {
-               //    wordNodes.remove(0);
-               // }
+               for (int z = 0; z < wordNodes.size(); z++) {
+                  wordNodes.remove(0);
+               }
 
                // int i = 0;
                // /* adds n into wordNodes in descending order */
@@ -209,18 +210,18 @@ public class SmartWord {
          //    }
          // }
 
-         int curWord = 0;
-         for (int i = 0; i < guesses.length; i++) {
-            if(i >= wordNodes.size()) {
-               break;
-            }
-            guesses[i] = wordNodes.get(curWord).fullWord;
-            curWord++;
-         }
+         // int curWord = 0;
+         // for (int i = 0; i < guesses.length; i++) {
+         //    if(i >= wordNodes.size()) {
+         //       break;
+         //    }
+         //    guesses[i] = wordNodes.get(curWord).fullWord;
+         //    curWord++;
+         // }
 
-         for (int z = 0; z < wordNodes.size(); z++) {
-            wordNodes.remove(0);
-         }
+         // for (int z = 0; z < wordNodes.size(); z++) {
+         //    wordNodes.remove(0);
+         // }
       }
 
       public static String getWord (tNode t) {
@@ -393,7 +394,7 @@ public class SmartWord {
       if(SmartWord.tNode.hasChild(current, letter)){
          current = current.getChild(letter);
          tNode.addGuesses(current, 0);
-         tNode.createGuesses();
+         //tNode.createGuesses();
 
       }
       return guesses;
@@ -402,28 +403,29 @@ public class SmartWord {
 
    public void feedback(boolean isCorrectGuess, String correctWord) {
       if((isCorrectGuess == false) && (correctWord == null)) {
-         for(String guess : guesses) {
+         for (String guess : guesses) {
             badGuess.add(guess);
          }
       }
 
       else if((isCorrectGuess == false) && (correctWord != null)) {
+         //badGuess.add(correctWord);
          tNode parent = root; // sets the parent equal to the root node
-           
-            for (int i = 0; i < correctWord.length(); i++) { // go through each character of the word
-               char current = correctWord.charAt(i);
-               if(tNode.hasChild(parent, current)) { // check if the parent has a child, if it does we get the child
-                  parent = parent.getChild(current);
-               } else { // if not we add child
-                  parent = tNode.appendChild(parent, current, 0);  
-               }
-           }
-           parent.count++; // mark the occurences of word
-           parent.setEndOfWord(true); // mark the ending of the word
+        
+         for (int i = 0; i < correctWord.length(); i++) { // go through each character of the word
+            char current = correctWord.charAt(i);
+            if(tNode.hasChild(parent, current)) { // check if the parent has a child, if it does we get the child
+               parent = parent.getChild(current);
+            } else { // if not we add child
+               parent = tNode.appendChild(parent, current, 0);  
+            }
+         }
+         parent.count++; // mark the occurences of word
+         parent.setEndOfWord(true); // mark the ending of the word
       }
 
       else if((isCorrectGuess) && (correctWord != null)) {
-         goodGuess.add(correctWord);
+         //goodGuess.add(correctWord);
          tNode.incremCount(root, correctWord);
       }
  
