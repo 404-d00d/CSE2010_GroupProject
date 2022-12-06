@@ -14,7 +14,7 @@ public class SmartWord {
 
    public static String[] guesses = new String[3];  // 3 guesses from SmartWord
 
-   public static tNode root = new tNode('*', 0); // creates the root tNode; // root of tree
+   public static tNode root = new tNode("*", 0); // creates the root tNode; // root of tree
 
    public static tNode current;
 
@@ -22,12 +22,11 @@ public class SmartWord {
 
  
    public static class tNode implements Comparable<tNode> { // tree class
-      char letter;
+      String letter;
       tNode parent;
       int count;
       List<tNode> children;
-      boolean endOfWord = false;
-      String fullWord; // only used for wordNodes, NEVER for the main tree
+      boolean endOfWord;
 
          // Need to fix this
          @Override
@@ -43,13 +42,14 @@ public class SmartWord {
             }
          }
 
-      public tNode (char letter, int count) { // constructor for tree node
+      public tNode (String letter, int count) { // constructor for tree node
         this.count = count;
         this.letter = letter;
         this.children = new ArrayList<tNode>();
+        this.endOfWord = false;
       }
 
-       public static tNode appendChild(tNode p, char c, int count) { // adds a child to tree
+       public static tNode appendChild(tNode p, String c, int count) { // adds a child to tree
          tNode t = new tNode(c, count); // creates new tree node
          t.setParent(p); // sets parent of node to p
          t.setEndOfWord(false);
@@ -57,7 +57,7 @@ public class SmartWord {
          /* alphabetically adds to list of children */
          int index = 0;
          for (tNode n : t.getParent().children) {
-            if (n.getLetter() >= t.getLetter()) {
+            if (n.getLetter().charAt(0) >= t.getLetter().charAt(0)) {
                t.getParent().children.add(index, t); // adds child to children list of parent in front of n
                break;
             } else {
@@ -72,10 +72,10 @@ public class SmartWord {
 
 
       /* get and set methods */
-      public char getLetter() { // returns the letter of a particular tree node
+      public String getLetter() { // returns the letter of a particular tree node
         return this.letter;
       }
-      public void setletter(char letter) { // sets the letter of a particular tree node to a string named letter
+      public void setLetter(String letter) { // sets the letter of a particular tree node to a string named letter
          this.letter = letter;
       }
       public int getCount() { // returns the count of a particular tree node
@@ -93,11 +93,27 @@ public class SmartWord {
       public List<tNode> getChildren() { // returns the children list of a particular tree node
          return this.children;
       }
+      public void setChildren (List<tNode> children) {
+         this.children = children;  
+      }
       public void setEndOfWord(boolean endOfWord) { // sets the character as making the end of a word true or false
          this.endOfWord = endOfWord;
       }
       public boolean getEndOfWord() { // returns true if character forms the end of a word,false otherwise
          return this.endOfWord;
+      }
+
+
+      /* using PreOrder Traversal, compresses the tree */
+      public static void compressTree(tNode n) {
+         if (n.getChildren().size() == 1) {
+            n.setLetter(n.getLetter() + n.getChildren().get(0).getLetter()); // combines letter Strings Strings
+            n.setChildren(n.getChildren().get(0).getChildren()); // sets n's children to n's child's children
+         }
+         
+         for (tNode tn : n.getChildren()) {
+            compressTree(tn);
+         }
       }
 
       
@@ -147,10 +163,10 @@ public class SmartWord {
 
 
       /* checks if there is a child */
-      public static Boolean hasChild(tNode p, char c) {
+      public static Boolean hasChild(tNode p, String c) {
          
          for(tNode child : p.getChildren()) {
-            if(child.letter == c) {
+            if(child.letter.equals(c)) {
                return true;
             }
          }
@@ -160,9 +176,9 @@ public class SmartWord {
 
 
       /* grabs the child */
-      public tNode getChild(char c) {
+      public tNode getChild(String c) {
          for(tNode child : children) {
-            if(child.getLetter() == c) {
+            if(child.getLetter().equals(c)) {
                return child;
             }
          }
@@ -209,14 +225,14 @@ public class SmartWord {
          return sb.toString();
       }
 
-      public static void incremCount(tNode parent, String word) {
+      /*public static void incremCount(tNode parent, String word) {
          for (int a = 0; a < word.length(); a++) {
             parent = parent.getChild(word.charAt(a));
          }
-         if ((parent.getEndOfWord() == true) && (parent.getLetter() == word.charAt(word.length() - 1))) {
+         if ((parent.getEndOfWord() == true) && (parent.getLetter().charAt(0) == word.charAt(word.length() - 1))) {
             parent.count++;
          }
-      }
+      }*/
    } /* end of tNode class */
 
 
@@ -233,7 +249,7 @@ public class SmartWord {
          tNode parent = root; // sets the parent equal to the root node
            
             for (int i = 0; i < line.length(); i++) { // go through each character of the word
-               char current = line.charAt(i);
+               String current = Character.toString(line.charAt(i));
                if(tNode.hasChild(parent, current)) { // check if the parent has a child, if it does we get the child
                   parent = parent.getChild(current);
                } else { // if not we add child
@@ -261,8 +277,8 @@ public class SmartWord {
 
          w = w.replaceAll("[^a-zA-Z]", "").toLowerCase(); // Gets rid of weird characters
          for (int i = 0; i < w.length(); i++) { // go through each character of the word
-            char current = w.charAt(i);
-           
+            String current = Character.toString(w.charAt(i));
+
             /* check if the parent has a child, if it does we get the child */
             if(tNode.hasChild(parent, current)) {
                parent = parent.getChild(current);
@@ -273,6 +289,7 @@ public class SmartWord {
          parent.count++; // mark the occurences of word      
          parent.setEndOfWord(true); // mark the ending of the word
       }
+      tNode.compressTree(root);
       sc2.close(); // closes scanner
    }
 
@@ -283,12 +300,13 @@ public class SmartWord {
    // letterPosition:  position of the letter in the word, starts from 0
    // wordPosition: position of the word in a message, starts from 0
    public String[] guess(char letter,  int letterPosition, int wordPosition) {
+      String newLetter = Character.toString(letter);
       guesses = new String[3];
       if(letterPosition == 0) {
          current = root;
       }
-      if(tNode.hasChild(current, letter)){
-         current = current.getChild(letter);
+      if(tNode.hasChild(current, newLetter)){
+         current = current.getChild(newLetter);
          int maxdepth = tNode.getRank(current) + 7;
 //System.out.println("LETTER: " + letter + ",  letterPosition: " + letterPosition + ",  wordPosition: " + wordPosition);
 //System.out.println("PATH: " + tNode.getWord(current));
@@ -320,7 +338,7 @@ System.out.println();*/
          tNode parent = root; // sets the parent equal to the root node
         
          for (int i = 0; i < correctWord.length(); i++) { // go through each character of the word
-            char current = correctWord.charAt(i);
+            String current = Character.toString(correctWord.charAt(i));
             if(tNode.hasChild(parent, current)) { // check if the parent has a child, if it does we get the child
                parent = parent.getChild(current);
             } else { // if not we add child
@@ -332,7 +350,7 @@ System.out.println();*/
       }
 
       else if((isCorrectGuess) && (correctWord != null)) {
-         tNode.incremCount(root, correctWord);
+         //tNode.incremCount(root, correctWord);
       }
  
    }
