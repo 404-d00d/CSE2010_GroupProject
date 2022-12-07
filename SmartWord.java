@@ -107,8 +107,20 @@ public class SmartWord {
       /* using PreOrder Traversal, compresses the tree */
       public static void compressTree(tNode n) {
          if (n.getChildren().size() == 1) {
+            //System.out.println("OLD LETTER = "+n.getLetter());
             n.setLetter(n.getLetter() + n.getChildren().get(0).getLetter()); // combines letter Strings Strings
+            // System.out.println("NEW LETTER = "+n.getLetter());
+            // System.out.print("OLD CHILDREN = ");
+            // for (tNode sus : n.getChildren()) {
+            //    System.out.print(sus.getLetter()+" "+ sus.getEndOfWord()+", ");
+            // }
+            // System.out.println();
             n.setChildren(n.getChildren().get(0).getChildren()); // sets n's children to n's child's children
+            // System.out.print("NEW CHILDREN = ");
+            // for (tNode sus : n.getChildren()) {
+            //    System.out.print(sus.getLetter()+" "+ sus.getEndOfWord()+", ");
+            // }
+            // System.out.println();
          }
          
          for (tNode tn : n.getChildren()) {
@@ -132,21 +144,21 @@ public class SmartWord {
             } else {
                addGuesses(e, max);
             }
-			
+         
          }
 
-		 int index = 0;
+       int index = 0;
          for(tNode tn : wordNodes) {
             if (index >= 3) {
                break;
-		    } else {
+          } else {
                guesses[index] = getWord(wordNodes.get(index));
-			}
-			index++;
-		 }
-		 
-		 //guesses[1] = getWord(wordNodes.get(1));
-		 //guesses[2] = getWord(wordNodes.get(2));
+         }
+         index++;
+       }
+       
+       //guesses[1] = getWord(wordNodes.get(1));
+       //guesses[2] = getWord(wordNodes.get(2));
       }
 
 
@@ -216,7 +228,6 @@ public class SmartWord {
                   // resets temp
                   tmp = "";
                }
-         
             }
          }
          if (this.endOfWord) {
@@ -225,14 +236,26 @@ public class SmartWord {
          return sb.toString();
       }
 
-      /*public static void incremCount(tNode parent, String word) {
-         for (int a = 0; a < word.length(); a++) {
-            parent = parent.getChild(word.charAt(a));
+      public static void incremCount(tNode parent, String word) {
+         int leng = 0;
+         int temp = leng+1;
+         while (temp < word.length()) {
+            temp = leng+1;
+            while (parent.getChild(word.substring(leng, temp)) == null) {
+               if (parent.getChild(word.substring(leng, temp)) == null) {
+                  temp++;
+               }
+               else {
+                  parent = parent.getChild(word.substring(leng, temp));
+                  break;
+               }
+            }
+            leng = temp;
          }
-         if ((parent.getEndOfWord() == true) && (parent.getLetter().charAt(0) == word.charAt(word.length() - 1))) {
+         if ((parent.getEndOfWord() == true) && (parent.getLetter().charAt(parent.getLetter().length()-1) == word.charAt(word.length() - 1))) {
             parent.count++;
          }
-      }*/
+      }
    } /* end of tNode class */
 
 
@@ -314,7 +337,7 @@ public class SmartWord {
 
 
 /*for (tNode ghf : wordNodes) {
-	System.out.print(tNode.getWord(ghf) + ", " + ghf.getCount() + ";  ");
+   System.out.print(tNode.getWord(ghf) + ", " + ghf.getCount() + ";  ");
 }
 System.out.println();*/
 
@@ -350,7 +373,7 @@ System.out.println();*/
       }
 
       else if((isCorrectGuess) && (correctWord != null)) {
-         //tNode.incremCount(root, correctWord);
+         tNode.incremCount(root, correctWord);
       }
  
    }
