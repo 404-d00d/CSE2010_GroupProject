@@ -247,11 +247,11 @@ public class SmartWord {
       if((isCorrectGuess == false) && (correctWord == null)) {
          return;
       }
-
+      // adds to trie if it is not there
       else if((isCorrectGuess == false) && (correctWord != null)) {
          tNode.addTrie(correctWord);
       }
-
+      // increases count if it is a good guess
       else if((isCorrectGuess) && (correctWord != null)) {
          tNode.incremCount(root, correctWord);
       }
