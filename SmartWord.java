@@ -5,6 +5,11 @@
   Course: CSE 2010
   Section: 34
   Description of the overall algorithm:
+  Build trie with words and old text file.
+  Trie is made character by Character.
+  Eval simulates user typing and guess will
+  return the top 3 best guesses. Feedback 
+  is used to improve accurracy.
 */
 
 import java.io.*;
@@ -14,8 +19,8 @@ public class SmartWord {
 
    public static String[] guesses = new String[3];  // 3 guesses from SmartWord
    public static tNode root = new tNode(' ', 0); // creates the root tNode; // root of tree
-   public static tNode current;
-   public static ArrayList<tNode> wordNodes = new ArrayList<>();
+   public static tNode current; // current value in the tree
+   public static ArrayList<tNode> wordNodes = new ArrayList<>(); // list containing end of word
 
    public static class tNode implements Comparable<tNode> { // tree class
       char letter;
@@ -24,18 +29,18 @@ public class SmartWord {
       List<tNode> children;
       boolean endOfWord = false;
 
-         @Override
-         public int compareTo(tNode t) {
-            if (this.count > t.count) {
-               return 1;
-            }
-            else if (this.count < t.count) {
-               return -1;
-            }
-            else {
-               return 0;
-            }
+      @Override
+      public int compareTo(tNode t) {
+         if (this.count > t.count) {
+            return 1;
          }
+         else if (this.count < t.count) {
+            return -1;
+         }
+         else {
+            return 0;
+         }
+      }
 
       public tNode (char letter, int count) { // constructor for tree node
         this.count = count;
@@ -110,7 +115,7 @@ public class SmartWord {
 			
          }
          
-		  
+		  // adds the top three choices to the guess array
          for(int i = 0; i < wordNodes.size(); i++) {
             if (i >= 3) {
                break;
@@ -163,7 +168,7 @@ public class SmartWord {
          }
          return rank;
       }
-
+      // increments the count if we get a good guess
       public static void incremCount(tNode parent, String word) {
          for (int a = 0; a < word.length(); a++) {
             parent = parent.getChild(word.charAt(a));
@@ -173,15 +178,7 @@ public class SmartWord {
          }
       }
 
-      public static void decCount(tNode parent, String word) {
-         for (int a = 0; a < word.length(); a++) {
-            parent = parent.getChild(word.charAt(a));
-         }
-         if ((parent.getEndOfWord() == true) && (parent.getLetter() == word.charAt(word.length() - 1))) {
-            parent.count--;
-         }
-      }
-
+      // adds characters to the trie
       public static void addTrie(String word) {
          tNode parent = root; // sets the parent equal to the root node
         
