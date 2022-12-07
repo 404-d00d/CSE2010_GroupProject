@@ -244,11 +244,8 @@ public class SmartWord {
 
 
    public void feedback(boolean isCorrectGuess, String correctWord) {
-      if((isCorrectGuess == false) && (correctWord == null)) {
-         return;
-      }
       // adds to trie if it is not there
-      else if((isCorrectGuess == false) && (correctWord != null)) {
+      if((isCorrectGuess == false) && (correctWord != null)) {
          tNode.addTrie(correctWord);
       }
       // increases count if it is a good guess
