@@ -29,6 +29,7 @@ public class SmartWord {
       List<tNode> children;
       boolean endOfWord = false;
 
+      // compares tNodes based on their count
       @Override
       public int compareTo(tNode t) {
          if (this.count > t.count) {
@@ -99,7 +100,8 @@ public class SmartWord {
          return this.endOfWord;
       }
 
-      
+
+      // adds 3 guesses to guesses[]
       public static void addGuesses(tNode c, int max) {
          // grabs entire children of node and runs recursive function
          for (tNode e : c.getChildren()) {
@@ -126,6 +128,7 @@ public class SmartWord {
       }
 
 
+      // returns word given a node with the last letter in the word
       public static String getWord (tNode t) {
          String s = "";
 
@@ -149,6 +152,7 @@ public class SmartWord {
          return false;
       }
 
+
       /* grabs the child */
       public tNode getChild(char c) {
          for(tNode child : children) {
@@ -159,6 +163,7 @@ public class SmartWord {
          return null;
       }
 
+
       /* returns the rank of the tree node with item equal to s */
       public static int getRank (tNode n) {
          int rank = 0;
@@ -168,6 +173,8 @@ public class SmartWord {
          }
          return rank;
       }
+
+
       // increments the count if we get a good guess
       public static void incremCount(tNode parent, String word) {
          for (int a = 0; a < word.length(); a++) {
@@ -177,6 +184,7 @@ public class SmartWord {
             parent.count++;
          }
       }
+
 
       // adds characters to the trie
       public static void addTrie(String word) {
@@ -192,9 +200,9 @@ public class SmartWord {
          }
          parent.count++; // mark the occurences of word
          parent.setEndOfWord(true); // mark the ending of the word
-
       }
    } /* end of tNode class */
+
 
    // initialize SmartWord with a file of English words
    public SmartWord(String wordFile) throws IOException {
@@ -204,11 +212,12 @@ public class SmartWord {
       /* loops until end of the file */
       while(sc.hasNextLine()) {
          String line = sc.nextLine();
-         tNode.addTrie(line);
+         tNode.addTrie(line); // adds trie
          
       }
       sc.close(); // closes scanner
    }
+
 
    // process old messages from oldMessageFile
    public void processOldMessages(String oldMessageFile) throws IOException {
@@ -223,24 +232,24 @@ public class SmartWord {
       sc2.close(); // closes scanner
    }
 
+
    public String[] guess(char letter,  int letterPosition, int wordPosition) {
       // reset guesses each time 
       guesses = new String[3];
-      if(letterPosition == 0) {
+      if(letterPosition == 0) { // resets to root for new word
          current = root;
       }
+
       if(tNode.hasChild(current, letter)){
          current = current.getChild(letter);
-         int maxdepth = tNode.getRank(current) + 8;
+         int maxdepth = tNode.getRank(current) + 8; // max depth we want to search for a word
 
-         tNode.addGuesses(current, maxdepth);
+         tNode.addGuesses(current, maxdepth); // adds guesses
 
-         wordNodes.clear();
+         wordNodes.clear(); // clears wordNodes
       }
-
       return guesses;
    }
-
 
 
    public void feedback(boolean isCorrectGuess, String correctWord) {
