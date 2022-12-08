@@ -198,7 +198,7 @@ public class SmartWord {
 
    // initialize SmartWord with a file of English words
    public SmartWord(String wordFile) throws IOException {
-      File wordF = new File("swords.txt");
+      File wordF = new File("w.txt");
       Scanner sc = new Scanner(wordF);
 
       /* loops until end of the file */
